@@ -1,0 +1,30 @@
+{
+  "name": "projectsoa",
+  "version": "1.0.0",
+  "description": "\"# ProjectSOA\"",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
+    "multer": "^1.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidBrave/ProjectSOA.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DavidBrave/ProjectSOA/issues"
+  },
+  "homepage": "https://github.com/DavidBrave/ProjectSOA#readme"
+}
