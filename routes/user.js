@@ -227,6 +227,18 @@ function numeric(inputtxt)
         return false; 
     }
 }
+function inrange(inputtxt)
+{
+    var matches2 = "[-+]?([1-5]*.[1-5]{1}$)";
+    if( inputtxt.match(matches2) !=null) 
+    {
+       return true;
+    }
+    else
+    { 
+        return false; 
+    }
+}
 router.post('/user/topUp',async(req,res)=>{
     try {
         if ( !req.headers["x-auth-token"] ){
@@ -310,56 +322,103 @@ router.post('/user/favorite',async(req,res)=>{
     }
 })
 
-// AMBIL NAMA GAME GAGAL TRUS
-// router.get('/user/favorite',async(req,res)=>{
-//     try {
-//         if ( !req.headers["x-auth-token"] ){
-//             msg = "unauthorized";
-//             return res.status(401).send({"msg" : msg});
-//         }
-//         let token = req.headers["x-auth-token"];
-//         let userdata = jwt.verify(token,key);
+router.get('/user/favorite',async(req,res)=>{
+    try {
+        if ( !req.headers["x-auth-token"] ){
+            msg = "unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+        let token = req.headers["x-auth-token"];
+        let userdata = jwt.verify(token,key);
         
-//         const conn = await getconn();
-//         query = `select * from user where email='${userdata.email}'`;
-//         let user = await executeQuery(conn,query);
+        const conn = await getconn();
+        query = `select * from user where email='${userdata.email}'`;
+        let user = await executeQuery(conn,query);
 
-//         let old_api_hit = user[0].api_hit;
-//         let new_api_hit = old_api_hit-5;
+        let old_api_hit = user[0].api_hit;
+        let new_api_hit = old_api_hit-5;
 
-//         //cek api hit cukup/tidak
-//         if(new_api_hit < 0){
-//             msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
-//             return res.status(400).send({"msg" : msg});
-//         }
-//         else{
-//             await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
+        //cek api hit cukup/tidak
+        if(new_api_hit < 0){
+            msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
+            return res.status(400).send({"msg" : msg});
+        }
+        else{
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
 
-//             let list_fav=[];
-//             query = `select * from favorite where email='${userdata.email}'`;
-//             let fav = await executeQuery(conn,query);
+            let list_fav=[];
+            query = `select * from favorite where email = '${userdata.email}'`;
+            let fav = await executeQuery(conn,query);
+            for (let i = 0; i < fav.length; i++) {
+                query = `https://api.rawg.io/api/games/${fav[0].id_game}?key=${apikey}`;
+                let game = await axios.get(query);
+                list_fav.push({
+                    "Game" : game["data"]["name"],
+                    "Adding Date" : fav[0].tgl_favorite
+                });
+            }
 
-//             for (let i = 0; i < fav.length; i++) {
-//                 query = `https://api.rawg.io/api/games/${fav.id_game}?key=${apikey}`;
-//                 let game = await axios.get(query);
-//                 //hasil.data.data[0].common_name
-//                 list_fav.push({
-//                     "Game" : game.data.data[0].name,
-//                     "Adding Date" : fav.tgl_favorite
-//                 });
-//             }
+            msg = "Favorite berhasil didapatkan";
+            conn.release();
+            return res.status(200).send({
+                "Nama_user" : userdata.nama,
+                "List Favorite" : list_fav 
+            })
+        }
+    } 
+    catch (error) {
+        return res.status(400).send(error)
+    }
+})
 
-//             msg = "Favorite berhasil didapatkan";
-//             conn.release();
-//             return res.status(200).send({
-//                 "Nama_user" : userdata.nama,
-//                 "List Favorite" : list_fav 
-//             })
-//         }
-//     } 
-//     catch (error) {
-//         return res.status(400).send(error)
-//     }
-// })
+router.post('/user/review',async(req,res)=>{
+    try {
+        if ( !req.headers["x-auth-token"] ){
+            msg = "unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+        let token = req.headers["x-auth-token"];
+        let userdata = jwt.verify(token,key);
+
+        let id_game = req.body.id_game;
+        let rating = req.body.rating;
+        let review = req.body.review;
+
+        //cek rating
+        if(10 >= parseInt(rating) || parseInt(rating) >= 100){
+            msg = "rating harus 10 sampai 100";
+            return res.status(400).send("rating harus 10 sampai 100");
+        }
+        if (!numeric(rating)) {
+            msg = "rating harus angka!";
+            return res.status(400).send("rating harus angka!");
+        }
+        
+        const conn = await getconn();
+        query = `select * from user where email='${userdata.email}'`;
+        let user = await executeQuery(conn,query);
+
+        let old_api_hit = user[0].api_hit;
+        let new_api_hit = old_api_hit-10;
+
+        //cek api hit cukup/tidak
+        if(new_api_hit < 0){
+            msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
+            return res.status(400).send({"msg" : msg});
+        }
+        else{
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
+
+            let id_game = req.body.id_game;
+            await executeQuery(conn,`insert into review values(NULL,'${userdata.email}','${parseInt(id_game)}', '${parseInt(rating)}', '${review}')`);
+            conn.release()
+            msg = "berhasil menambahkan review";
+            return res.status(400).send({"msg" : msg});
+        }
+    } 
+    catch (error) {
+        return res.status(400).send(error)
+    }
+})
 
 module.exports = router
