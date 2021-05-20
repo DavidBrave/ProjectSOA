@@ -421,4 +421,71 @@ router.post('/user/review',async(req,res)=>{
     }
 })
 
+
+
+
+//Brave
+
+router.put('/user/profile',async(req,res)=>{
+
+    try {
+
+        let pass = req.body.password;
+        let nama = req.body.nama_user;
+        let jenis = req.body.jenis_user;
+        let directory = "./uploads" + req.file.filename;
+
+
+        if ( !req.headers["x-auth-token"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
+        }
+        let token = req.headers["x-auth-token"];
+        let userdata = jwt.verify(token,key);
+
+        const conn = await getconn();
+        query = 
+        `SELECT * 
+        FROM user 
+        WHERE email = '${userdata.email}'`;
+        let result = await executeQuery(conn,query);
+
+
+        if ( result.length < 1 ){
+            msg = "Email tidak ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+        if ( jenis != "N" && jenis != "P" ){
+            msg = "Jenis user harus N atau P";
+            return res.status(400).send({"msg" : msg});
+        }
+
+        if ( !email.includes("@") || !email.includes(".com") ){
+            msg = "Email user harus @ atau .com";
+            return res.status(400).send({"msg" : msg});
+        }
+
+        query = 
+        `UPDATE user
+        SET password = '${pass}', nama_user = '${nama}', jenis_user = '${jenis}'
+        WHERE email = '${email}';`;
+        const user = await executeQuery(conn, query);
+
+        conn.release();
+        return res.status(200).send({
+            "nama" : nama,
+            "jenis_user" : jenis,
+            "password" : pass,
+        });
+
+    } catch (error) {
+        return res.status(400).send(error);
+    }
+
+
+});
+
+
+
 module.exports = router
