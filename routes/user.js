@@ -70,8 +70,8 @@ router.post('/register',uploads.single('gambar_profile'), async(req,res)=>{
         let pass = req.body.password
         let nama = req.body.nama_user
         let jenis = req.body.jenis_user
-        let directory = "./uploads" + req.file.filename
-        
+        let directory = "./uploads/" + req.file.filename
+
         const conn = await getconn()
         query = `select * from user where email='${email}'`
         const user = await executeQuery(conn,query)
@@ -86,10 +86,9 @@ router.post('/register',uploads.single('gambar_profile'), async(req,res)=>{
         }
 
         if ( !email.includes("@") || !email.includes(".com") ){
-            msg = "jenis user harus @ dan .com"
+            msg = "email user harus @ dan .com"
             return res.status(400).send({"msg" : msg})
         }
-
         query = `insert into user values('${email}','${pass}','${nama}','${jenis}','${directory}',0,50)`
         await executeQuery(conn,query)
 
@@ -143,7 +142,7 @@ router.post('/login', async(req,res)=>{
     }
 })
 
-router.get('/user/history',async(req,res)=>{
+router.get('/history',async(req,res)=>{
     try {
 
         if ( !req.headers["x-auth-token"] ){
@@ -154,7 +153,7 @@ router.get('/user/history',async(req,res)=>{
         let userdata = jwt.verify(token,key)
         
         const conn = await getconn()
-        query = `select * from history where id_user='${userdata.email}'`
+        query = `select * from history where email='${userdata.email}'`
         let result = await executeQuery(conn,query)
         
         listHistory = []
@@ -174,6 +173,7 @@ router.get('/user/history',async(req,res)=>{
                 "Search Date" : history.tgl_history,
                 "History Description" : history.deskripsi_history
             })
+            console.log(game.name);
         }
 
         msg = "history berhasil didapatkan"
@@ -187,7 +187,7 @@ router.get('/user/history',async(req,res)=>{
     }
 })
 
-router.delete('/user/history',async(req,res)=>{
+router.delete('/history',async(req,res)=>{
     try {
         if ( !req.headers["x-auth-token"] ){
             msg = "unauthorized"
@@ -239,7 +239,7 @@ function inrange(inputtxt)
         return false; 
     }
 }
-router.post('/user/topUp',async(req,res)=>{
+router.post('/topUp',async(req,res)=>{
     try {
         if ( !req.headers["x-auth-token"] ){
             msg = "unauthorized";
@@ -285,7 +285,7 @@ router.post('/user/topUp',async(req,res)=>{
     }
 })
 
-router.post('/user/favorite',async(req,res)=>{
+router.post('/favorite',async(req,res)=>{
     try {
         if ( !req.headers["x-auth-token"] ){
             msg = "unauthorized";
@@ -322,7 +322,7 @@ router.post('/user/favorite',async(req,res)=>{
     }
 })
 
-router.get('/user/favorite',async(req,res)=>{
+router.get('/favorite',async(req,res)=>{
     try {
         if ( !req.headers["x-auth-token"] ){
             msg = "unauthorized";
@@ -371,7 +371,7 @@ router.get('/user/favorite',async(req,res)=>{
     }
 })
 
-router.post('/user/review',async(req,res)=>{
+router.post('/review',async(req,res)=>{
     try {
         if ( !req.headers["x-auth-token"] ){
             msg = "unauthorized";

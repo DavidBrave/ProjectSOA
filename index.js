@@ -6,8 +6,8 @@ app.use(express.urlencoded({extended : true}))
 const user = require("./routes/user")
 const game = require("./routes/game")
 
-app.use("/api",user)
-app.use("/api",game)// <-yang ini biarkan di sini
+app.use("/user",user)
+app.use("/game",game)// <-yang ini biarkan di sini
 
 app.listen(3000)
 console.log("listening port : 3000")

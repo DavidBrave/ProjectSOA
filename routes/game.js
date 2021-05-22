@@ -65,7 +65,7 @@ function executeQuery(conn,q) {
 ///////////////////////////////////////////////////////////////////////////
 
 
-app.get('/games/id/:id', async function (req, res) {
+app.get('/id/:id', async function (req, res) {
     let idGame=req.params.id;
         if(isNaN(idGame)){
         return res.status(400).send("id game harus angka");
@@ -102,22 +102,20 @@ app.get('/games/id/:id', async function (req, res) {
         else{
             return res.status(404).send('game not found');
         }
-        
     }
     catch (error) {
         return res.status(404).send(error);
     }
-    
-    
 })
 
-app.get('/games/search/:keyword', async function (req, res) {
+app.get('/search/:keyword', async function (req, res) {
     let keyword=req.params.keyword;
     let query = `https://api.rawg.io/api/games?key=${apikey}&search=${keyword}`;
     try {
         let game = await axios.get(query)
         let result=[];
         for (let i = 0; i < game['data']['results'].length; i++) {
+            let esrbRating=game["data"]["results"][i]["esrb_rating"];
             result.push(
                 {
                     "id_game":game["data"]["results"][i]["id"],
@@ -125,8 +123,8 @@ app.get('/games/search/:keyword', async function (req, res) {
                     "release_date":game["data"]["results"][i]["released"],
                     "rating":game["data"]["results"][i]["rating"]+"/"+game["data"]["results"][i]["rating_top"],
                     "playtime":game["data"]["results"][i]["playtime"]+" hours",
-                    "background_image":game["data"]["results"][i]["background_image"],
-                    "esrb_rating":game["data"]["results"][i]["esrb_rating"],
+                    "screenshots":game["data"]["results"][i]["short_screenshots"],
+                    "esrb_rating":esrbRating,
                     "metacritics_score":game["data"]["results"][i]["metacritic"],
                 }
             )
@@ -144,7 +142,7 @@ app.get('/games/search/:keyword', async function (req, res) {
 
 })
 
-app.get('/games/listall', async function (req, res) {
+app.get('/listall', async function (req, res) {
     let page=req.query.page;
     let query = `https://api.rawg.io/api/games?key=${apikey}&page=${page}`;
     try {
@@ -168,7 +166,7 @@ app.get('/games/listall', async function (req, res) {
 
 })
 
-app.get('/games/filter', async function (req, res) {
+app.get('/filter', async function (req, res) {
     let genre=req.query.genre;
     let page=req.query.page;
     let startYear=req.query.start_year;

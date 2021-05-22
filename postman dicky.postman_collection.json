@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "d0986ede-5420-4f5a-ad2e-6c5a5c0bc516",
+		"name": "postman dicky",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:3000/api/user/topUp",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2OTM0OSwiZXhwIjoxNjIxMTkwOTQ5fQ.XxZRSoAP-eP_Yw-JqHkHh7mV1ilAL3yfbSBk6H5isBE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "total_api_hit",
+							"value": "10",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/user/topUp",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"topUp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/user/favorite",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2NzIxNiwiZXhwIjoxNjIxMTg4ODE2fQ.tS0BGpTlUqiLBxY9cDWexpcoC5sexv2xlvDYMq28Ovs",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "3498",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/user/favorite",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/user/favorite",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2NzIxNiwiZXhwIjoxNjIxMTg4ODE2fQ.tS0BGpTlUqiLBxY9cDWexpcoC5sexv2xlvDYMq28Ovs",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/api/user/favorite",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/user/review",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2OTM0OSwiZXhwIjoxNjIxMTkwOTQ5fQ.XxZRSoAP-eP_Yw-JqHkHh7mV1ilAL3yfbSBk6H5isBE",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "80",
+							"type": "text"
+						},
+						{
+							"key": "review",
+							"value": "mantul",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/user/review",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"review"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
