@@ -426,30 +426,26 @@ router.post('/review',async(req,res)=>{
 
 //Brave
 
-router.put('/user/profile',async(req,res)=>{
+router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
 
     try {
+
+        const conn = await getconn();
+        let new_api_hit = 10;
+        if ( !req.headers["x-auth-token"] ){
+            msg = "unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+        let token = req.headers["x-auth-token"];
+        let userdata = jwt.verify(token,key);
 
         let pass = req.body.password;
         let nama = req.body.nama_user;
         let jenis = req.body.jenis_user;
         let directory = "./uploads" + req.file.filename;
 
-
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized"
-            return res.status(401).send({"msg" : msg})
-        }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
-
-        const conn = await getconn();
-        query = 
-        `SELECT * 
-        FROM user 
-        WHERE email = '${userdata.email}'`;
-        let result = await executeQuery(conn,query);
-
+        let query_user = `SELECT * FROM user WHERE email = '${userdata.email}'`;
+        let result = await executeQuery(conn,query_user);
 
         if ( result.length < 1 ){
             msg = "Email tidak ditemukan";
@@ -461,30 +457,253 @@ router.put('/user/profile',async(req,res)=>{
             return res.status(400).send({"msg" : msg});
         }
 
-        if ( !email.includes("@") || !email.includes(".com") ){
-            msg = "Email user harus @ atau .com";
-            return res.status(400).send({"msg" : msg});
-        }
-
         query = 
         `UPDATE user
-        SET password = '${pass}', nama_user = '${nama}', jenis_user = '${jenis}'
-        WHERE email = '${email}';`;
+        SET password = '${pass}', nama_user = '${nama}', jenis_user = '${jenis}', gambar_profile = '${directory}' WHERE email = '${userdata.email}';`;
         const user = await executeQuery(conn, query);
-
-        conn.release();
-        return res.status(200).send({
-            "nama" : nama,
-            "jenis_user" : jenis,
-            "password" : pass,
-        });
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+        return res.status(200).send("Berhasil mengubah user");
 
     } catch (error) {
-        return res.status(400).send(error);
+        return res.status(400).send("Gagal mengubah user");
+    }
+
+    
+
+});
+
+
+
+router.put('/review',async(req,res)=>{
+
+        const conn = await getconn();
+        let new_api_hit = 10;
+        if ( !req.headers["x-auth-token"] ){
+            msg = "unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+        let token = req.headers["x-auth-token"];
+        let userdata = jwt.verify(token,key);
+
+
+        try {
+            //console.log("masuk try");
+
+
+            let id_game = req.body.id_game;
+            let rating = req.body.rating;
+            let review = req.body.review;
+
+            //cek rating
+            if(10 >= parseInt(rating) || parseInt(rating) >= 100){
+                msg = "rating harus 10 sampai 100";
+                return res.status(400).send("rating harus 10 sampai 100");
+            }
+            if (!numeric(rating)) {
+                msg = "rating harus angka!";
+                return res.status(400).send("rating harus angka!");
+            }
+            
+            
+            query = `select * from user where email='${userdata.email}'`;
+            let user = await executeQuery(conn,query);
+            //console.log("select user");
+
+            let old_api_hit = user[0].api_hit;
+            new_api_hit = old_api_hit - 10;
+
+            //cek api hit cukup/tidak
+            if(new_api_hit < 0){
+                msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
+                return res.status(400).send({"msg" : msg});
+            }
+            else{
+
+                //console.log("api cukup");
+
+                let query = `UPDATE review SET rating = ${rating}, review = '${review}' WHERE email = '${userdata.email}' AND id_game = '${id_game}';`;
+
+
+                //console.log("update review");
+
+                let result = await executeQuery(conn, query);
+                conn.release();
+
+                //console.log(result.length);
+
+                if (result.length < 1) {
+                    
+                    msg = "Review gagal diubah";
+                    return res.status(400).send({"msg" : msg});
+                }
+                else 
+                {
+                    msg = "Berhasil mengubah review";
+                    
+                    
+                }
+
+
+            }
+        } 
+        catch (error) {
+            return res.status(400).send("Review gagal diubah")
+        }
+
+
+        let update_api_hit = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+        
+
+        msg = "Berhasil mengubah review";
+        return res.status(200).send({"msg" : msg});
+        console.log("return");
+
+    
+});
+
+
+router.delete('/favorite',async(req,res)=>{
+
+
+    if ( !req.headers["x-auth-token"] ){
+        msg = "unauthorized";
+        return res.status(401).send({"msg" : msg});
+    }
+
+    let token = req.headers["x-auth-token"];
+    let userdata = jwt.verify(token,key);
+
+    let new_api_hit = 10;
+
+    const conn = await getconn();
+
+    
+
+    try {
+        
+        let query_user = `select * from user where email = '${userdata.email}'`;
+        let user = await executeQuery(conn,query_user);
+
+        let old_api_hit = user[0].api_hit;
+        new_api_hit = old_api_hit - 10;
+
+        //cek api hit cukup/tidak
+        if(new_api_hit < 0){
+            msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
+            return res.status(400).send({"msg" : msg});
+        }
+    } 
+    catch (error) {
+        return res.status(400).send("Gagal menghapus favorite")
+    }
+
+    let id_game = req.body.id_game;
+    let query = `DELETE FROM favorite WHERE email = '${userdata.email}' AND id_game = '${id_game}';`;
+
+    let result = await executeQuery(conn, query);
+    try {
+        conn.release();
+    } catch (error) {
+        
+    }
+
+    if (result.length < 1) {
+        msg = "Favorite tidak berhasil dihapus";
+        return res.status(400).send({"msg" : msg});
+    }
+    else 
+    {
+        await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+        
+    }
+
+    msg = "Berhasil menghapus favorite";
+    return res.status(200).send({"msg" : msg});
+
+});
+
+
+
+router.delete('/review',async(req,res)=>{
+
+    if ( !req.headers["x-auth-token"] ){
+        msg = "unauthorized";
+        return res.status(401).send({"msg" : msg});
+    }
+    let token = req.headers["x-auth-token"];
+    let userdata = jwt.verify(token,key);
+
+    let id_game = req.body.id_game;
+
+    const conn = await getconn();
+
+    let new_api_hit = 10;
+
+    try {
+        
+        const conn = await getconn();
+        query = `select * from user where email='${userdata.email}'`;
+        let user = await executeQuery(conn,query);
+
+        let old_api_hit = user[0].api_hit;
+        new_api_hit = old_api_hit-10;
+
+        //cek api hit cukup/tidak
+        if(new_api_hit < 0){
+            msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
+            return res.status(400).send({"msg" : msg});
+        }
+    } 
+    catch (error) {
+        return res.status(400).send("Gagal menghapus")
     }
 
 
+    let result = null;
+     
+    try {
+        
+        result = await executeQuery(conn,`DELETE from review WHERE email = '${userdata.email}' AND id_game = '${id_game}';`);
+        conn.release();
+
+
+    } catch (error) {
+        return res.status(400).send("Gagal menghapus review");
+    }
+
+
+    if (result.length < 1) {
+        return res.status(400).send("Gagal menghapus review");
+    }
+    else {
+        result = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
+    }
+    
+
+    msg = "Berhasil menghapus review";
+    return res.status(200).send({"msg" : msg});
+
+
 });
+
+
+
+
+
 
 
 

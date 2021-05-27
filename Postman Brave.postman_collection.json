@@ -1,0 +1,194 @@
+{
+	"info": {
+		"_postman_id": "f46aca28-a3e5-488b-bbf7-f3a32b598349",
+		"name": "Postman Brave",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "game-api-key",
+						"value": "21ec2ad17ea7447f8b249a5cdedf9e17",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "brave@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "brave",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Rating/Review",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "3498",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "40",
+							"type": "text"
+						},
+						{
+							"key": "review",
+							"value": "Ini review untuk gta 5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/review",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"review"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Rating/Review",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "3498",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/review",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"review"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Favorite",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "11",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/user/favorite",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"favorite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/user/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
