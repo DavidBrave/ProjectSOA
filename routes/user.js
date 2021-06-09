@@ -64,6 +64,16 @@ function executeQuery(conn,q) {
 ///////////////////////////////////////////////////////////////////////////
 
 
+function generateApiKey() {
+    const charList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ0123456789";
+    let apikey = "";
+    for(let i = 0; i < 15; i++) {
+        let rand = Math.floor(Math.random() * charList.length);
+        apikey = apikey + charList.charAt(rand);
+    }
+    return apikey;
+}
+
 router.post('/register',uploads.single('gambar_profile'), async(req,res)=>{
     try {
         let email = req.body.email
@@ -71,6 +81,7 @@ router.post('/register',uploads.single('gambar_profile'), async(req,res)=>{
         let nama = req.body.nama_user
         let jenis = req.body.jenis_user
         let directory = "./uploads/" + req.file.filename
+        let apikey = generateApiKey();
 
         const conn = await getconn()
         query = `select * from user where email='${email}'`
@@ -89,13 +100,14 @@ router.post('/register',uploads.single('gambar_profile'), async(req,res)=>{
             msg = "email user harus @ dan .com"
             return res.status(400).send({"msg" : msg})
         }
-        query = `insert into user values('${email}','${pass}','${nama}','${jenis}','${directory}',0,50)`
+        query = `insert into user values('${apikey}','${email}','${pass}','${nama}','${jenis}','${directory}',0,50)`
         await executeQuery(conn,query)
 
         conn.release()
         return res.status(201).send({
             "nama" : nama,
             "email" : email,
+            "api key" : apikey,
             "api hit" : 50,
             "saldo" : 0
         })
@@ -104,37 +116,27 @@ router.post('/register',uploads.single('gambar_profile'), async(req,res)=>{
     }
 })
 
+// user ambil apikey
 router.post('/login', async(req,res)=>{
     try {
         let email = req.body.email
         let pass = req.body.password
-        
         const conn = await getconn()
         query = `select * from user where email='${email}'`
         const user = await executeQuery(conn,query)
-        if ( user.length==0){
-            msg = "user tidak ditemukan"
+
+        if ( user.length==0 ){
+            msg = "email tidak ditemukan"
             return res.status(404).send({"msg" : msg})
         }
-
-        if ( user[0].password != pass){
+        if ( user[0].password != pass ){
             msg = "password salah"
             return res.status(400).send({"msg" : msg})
         }
-        
-        let token = jwt.sign(
-            {
-                "email" : email,
-                "nama" : user[0].nama_user,
-                "jenis" : user[0].jenis_user
-            },key,
-            {expiresIn : "6h"}
-        )
-
         conn.release()
-        return res.status(201).send({
+        return res.status(200).send({
             "nama" : user[0].nama_user,
-            "jwt_key" : token,
+            "key" : user[0].api_key,
         })
 
     } catch (error) {
@@ -144,16 +146,21 @@ router.post('/login', async(req,res)=>{
 
 router.get('/history',async(req,res)=>{
     try {
-
-        if ( !req.headers["x-auth-token"] ){
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
             msg = "unauthorized"
             return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"]
-        let userdata = jwt.verify(token,key)
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
         
-        const conn = await getconn()
-        query = `select * from history where email='${userdata.email}'`
+        query = `select * from history where email='${userdata[0].email}'`
         let result = await executeQuery(conn,query)
         
         listHistory = []
@@ -189,15 +196,21 @@ router.get('/history',async(req,res)=>{
 
 router.delete('/history',async(req,res)=>{
     try {
-        if ( !req.headers["x-auth-token"] ){
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
             msg = "unauthorized"
             return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"]
-        let userdata = jwt.verify(token,key)
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
         
-        const conn = await getconn()
-        query = `Delete history where id_user='${userdata.email}'`
+        query = `Delete history where email='${userdata[0].email}'`
         await executeQuery(conn,query)
         
         msg = "history berhasil dibersihkan"
@@ -241,16 +254,21 @@ function inrange(inputtxt)
 }
 router.post('/topUp',async(req,res)=>{
     try {
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized";
-            return res.status(401).send({"msg" : msg});
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
         
-        const conn = await getconn();
-        query = `select * from user where email='${userdata.email}'`;
-        let user = await executeQuery(conn,query);
+        let user = userdata;
 
         let total_api_hit = req.body.total_api_hit;
         
@@ -287,16 +305,21 @@ router.post('/topUp',async(req,res)=>{
 
 router.post('/favorite',async(req,res)=>{
     try {
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized";
-            return res.status(401).send({"msg" : msg});
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
         
-        const conn = await getconn();
-        query = `select * from user where email='${userdata.email}'`;
-        let user = await executeQuery(conn,query);
+        let user = userdata;
 
         let old_api_hit = user[0].api_hit;
         let new_api_hit = old_api_hit-10;
@@ -324,16 +347,21 @@ router.post('/favorite',async(req,res)=>{
 
 router.get('/favorite',async(req,res)=>{
     try {
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized";
-            return res.status(401).send({"msg" : msg});
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
         
-        const conn = await getconn();
-        query = `select * from user where email='${userdata.email}'`;
-        let user = await executeQuery(conn,query);
+        let user = userdata;
 
         let old_api_hit = user[0].api_hit;
         let new_api_hit = old_api_hit-5;
@@ -373,12 +401,21 @@ router.get('/favorite',async(req,res)=>{
 
 router.post('/review',async(req,res)=>{
     try {
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized";
-            return res.status(401).send({"msg" : msg});
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
+        
+        let user = userdata;
 
         let id_game = req.body.id_game;
         let rating = req.body.rating;
@@ -393,10 +430,6 @@ router.post('/review',async(req,res)=>{
             msg = "rating harus angka!";
             return res.status(400).send("rating harus angka!");
         }
-        
-        const conn = await getconn();
-        query = `select * from user where email='${userdata.email}'`;
-        let user = await executeQuery(conn,query);
 
         let old_api_hit = user[0].api_hit;
         let new_api_hit = old_api_hit-10;
@@ -432,20 +465,26 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
 
         const conn = await getconn();
         let new_api_hit = 10;
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized";
-            return res.status(401).send({"msg" : msg});
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
         }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
+        
+        let result = userdata;
 
         let pass = req.body.password;
         let nama = req.body.nama_user;
         let jenis = req.body.jenis_user;
         let directory = "./uploads" + req.file.filename;
-
-        let query_user = `SELECT * FROM user WHERE email = '${userdata.email}'`;
-        let result = await executeQuery(conn,query_user);
 
         if ( result.length < 1 ){
             msg = "Email tidak ditemukan";
@@ -476,20 +515,23 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
 
 });
 
-
-
 router.put('/review',async(req,res)=>{
 
-        const conn = await getconn();
-        let new_api_hit = 10;
-        if ( !req.headers["x-auth-token"] ){
-            msg = "unauthorized";
-            return res.status(401).send({"msg" : msg});
-        }
-        let token = req.headers["x-auth-token"];
-        let userdata = jwt.verify(token,key);
+    const conn = await getconn()
+    if ( !req.headers["key"] ){
+        msg = "unauthorized"
+        return res.status(401).send({"msg" : msg})
+    }
+    let token = req.headers["key"]
+    query = `select * from user where api_key='${token}'`
+    let userdata = await executeQuery(conn,query)
 
-
+    if ( userdata.length==0 ){
+        msg = "data tidak ditemukan"
+        return res.status(404).send({"msg" : msg})
+    }
+    
+    let user = userdata;
         try {
             //console.log("masuk try");
 
@@ -508,10 +550,6 @@ router.put('/review',async(req,res)=>{
                 return res.status(400).send("rating harus angka!");
             }
             
-            
-            query = `select * from user where email='${userdata.email}'`;
-            let user = await executeQuery(conn,query);
-            //console.log("select user");
 
             let old_api_hit = user[0].api_hit;
             new_api_hit = old_api_hit - 10;
@@ -573,26 +611,25 @@ router.put('/review',async(req,res)=>{
 
 router.delete('/favorite',async(req,res)=>{
 
-
-    if ( !req.headers["x-auth-token"] ){
-        msg = "unauthorized";
-        return res.status(401).send({"msg" : msg});
+    const conn = await getconn()
+    if ( !req.headers["key"] ){
+        msg = "unauthorized"
+        return res.status(401).send({"msg" : msg})
     }
+    let token = req.headers["key"]
+    query = `select * from user where api_key='${token}'`
+    let userdata = await executeQuery(conn,query)
 
-    let token = req.headers["x-auth-token"];
-    let userdata = jwt.verify(token,key);
+    if ( userdata.length==0 ){
+        msg = "data tidak ditemukan"
+        return res.status(404).send({"msg" : msg})
+    }
+    
+    let user = userdata;
 
     let new_api_hit = 10;
 
-    const conn = await getconn();
-
-    
-
     try {
-        
-        let query_user = `select * from user where email = '${userdata.email}'`;
-        let user = await executeQuery(conn,query_user);
-
         let old_api_hit = user[0].api_hit;
         new_api_hit = old_api_hit - 10;
 
@@ -640,24 +677,27 @@ router.delete('/favorite',async(req,res)=>{
 
 router.delete('/review',async(req,res)=>{
 
-    if ( !req.headers["x-auth-token"] ){
-        msg = "unauthorized";
-        return res.status(401).send({"msg" : msg});
+    const conn = await getconn()
+    if ( !req.headers["key"] ){
+        msg = "unauthorized"
+        return res.status(401).send({"msg" : msg})
     }
-    let token = req.headers["x-auth-token"];
-    let userdata = jwt.verify(token,key);
+    let token = req.headers["key"]
+    query = `select * from user where api_key='${token}'`
+    let userdata = await executeQuery(conn,query)
+
+    if ( userdata.length==0 ){
+        msg = "data tidak ditemukan"
+        return res.status(404).send({"msg" : msg})
+    }
+    
+    let user = userdata;
 
     let id_game = req.body.id_game;
-
-    const conn = await getconn();
 
     let new_api_hit = 10;
 
     try {
-        
-        const conn = await getconn();
-        query = `select * from user where email='${userdata.email}'`;
-        let user = await executeQuery(conn,query);
 
         let old_api_hit = user[0].api_hit;
         new_api_hit = old_api_hit-10;
@@ -672,9 +712,7 @@ router.delete('/review',async(req,res)=>{
         return res.status(400).send("Gagal menghapus")
     }
 
-
     let result = null;
-     
     try {
         
         result = await executeQuery(conn,`DELETE from review WHERE email = '${userdata.email}' AND id_game = '${id_game}';`);
