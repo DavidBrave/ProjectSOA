@@ -68,6 +68,7 @@ function executeQuery(conn,q) {
 app.get('/id/:id', async function (req, res) {
     let idGame=req.params.id;
         if(isNaN(idGame)){
+        msg="id game harus angka";
         return res.status(400).send("id game harus angka");
     }
     let query = `https://api.rawg.io/api/games/${idGame}?key=${apikey}`
@@ -88,22 +89,30 @@ app.get('/id/:id', async function (req, res) {
             "reddit_name":game["data"]["reddit_name"],
             "reddit_url":game["data"]["reddit_url"],
         })
-        if ( req.headers["x-auth-token"] ){
-            let token = req.headers["x-auth-token"]
-            let userdata = jwt.verify(token,key)
+        if ( req.headers["key"] ){
+            let token = req.headers["key"]
     
             const conn = await getconn()
-            let query = `insert into history values(null, '${userdata.email}', ${idGame}, null, 'view detail game')`
-            let hasilInsert = await executeQuery(conn,query);
+            
+            let query = `select * from user where api_key='${token}'`
+            let hasilSelect = await executeQuery(conn,query);
+
+            if(hasilSelect.length>0){
+                let query = `insert into history values(null, '${token}', ${idGame}, null, 'view detail game')`
+                let hasilInsert = await executeQuery(conn,query);
+            }
         }
         if(result.length>0){
+            msg="get detail game berhasil";
             return res.status(200).send(result);
         }
         else{
+            msg="game not found";
             return res.status(404).send('game not found');
         }
     }
     catch (error) {
+        msg="error";
         return res.status(404).send(error);
     }
 })
@@ -130,12 +139,15 @@ app.get('/search/:keyword', async function (req, res) {
             )
         }
         if(result.length>0){
+            msg="search game berhasil";
             return res.status(200).send(result);
         }
         else{
+            msg="game not found";
             return res.status(404).send('game not found');
         }
     } catch (error) {
+        msg="error";
         return res.status(404).send(error);
     }
     
@@ -158,8 +170,10 @@ app.get('/listall', async function (req, res) {
                 }
             )
         }
+        msg="list all game berhasil";
         return res.status(200).send(result);
     } catch (error) {
+        msg="error";
         return res.status(404).send(error);
     }
     
@@ -252,13 +266,16 @@ app.get('/filter', async function (req, res) {
         }
 
         if(result.length>0){
+            msg="filter game berhasil";
             return res.status(200).send(result);
         }
         else{
+            msg="game not found";
             return res.status(404).send('game not found');
         }
 
     } catch (error) {
+        msg="error";
         return res.status(404).send(error);
     }
 
