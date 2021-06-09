@@ -1,0 +1,264 @@
+{
+	"info": {
+		"_postman_id": "d5b54235-e13e-4a83-ad2a-e7f8cfaa41aa",
+		"name": "proyek",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "detailGame",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTM1MzIxMywiZXhwIjoxNjIxMzc0ODEzfQ.JC21XERIVyX2VK9owNtVLdJIJscgqSwsJlOQq2T9Oj0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:3000/api/games/id/1234567890",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"games",
+						"id",
+						"1234567890"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchGame",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/games/search/portal",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"games",
+						"search",
+						"portal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listAllGame",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/games/listall?page=10",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"games",
+						"listall"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "filterGame",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/games/filter?genre=puzzle&page=2&start_year=2010&end_year=2014&rating_start=0&rating_end=4&metacritic_start=0&metacritic_end=70&playtime_start=0&playtime_end=3",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"games",
+						"filter"
+					],
+					"query": [
+						{
+							"key": "genre",
+							"value": "puzzle"
+						},
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "start_year",
+							"value": "2010"
+						},
+						{
+							"key": "end_year",
+							"value": "2014"
+						},
+						{
+							"key": "rating_start",
+							"value": "0"
+						},
+						{
+							"key": "rating_end",
+							"value": "4"
+						},
+						{
+							"key": "metacritic_start",
+							"value": "0"
+						},
+						{
+							"key": "metacritic_end",
+							"value": "70"
+						},
+						{
+							"key": "playtime_start",
+							"value": "0"
+						},
+						{
+							"key": "playtime_end",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "dicky@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "ggwp",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register Copy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "premium3@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "premium",
+							"type": "text"
+						},
+						{
+							"key": "nama_user",
+							"value": "userP2",
+							"type": "text"
+						},
+						{
+							"key": "jenis_user",
+							"value": "N",
+							"type": "text"
+						},
+						{
+							"key": "gambar_profile",
+							"type": "file",
+							"src": "/C:/Users/leodj/Pictures/18413.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.rawg.io/api/games?key=d8748587481847979b6f392bf46ccc62&page=10",
+					"protocol": "https",
+					"host": [
+						"api",
+						"rawg",
+						"io"
+					],
+					"path": [
+						"api",
+						"games"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "d8748587481847979b6f392bf46ccc62"
+						},
+						{
+							"key": "search",
+							"value": "witcher",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
