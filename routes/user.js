@@ -3,11 +3,19 @@ const router = express.Router()
 const mysql = require("mysql")
 const morgan = require("morgan")
 const fs = require("fs")
+
+// const pool = mysql.createPool({
+//     host : "localhost",
+//     database : "proyek_soa",
+//     user : "root",
+//     password : "",
+// })
+
 const pool = mysql.createPool({
-    host : "localhost",
-    database : "proyek_soa",
-    user : "root",
-    password : "",
+    host : "185.232.14.1",
+    database : "u855625606_ProjectSOA",
+    user : "u855625606_ProjectSOA",
+    password : "ProjectSOA2021",
 })
 const axios = require("axios")
 const multer = require("multer")
@@ -467,7 +475,6 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
 
     try {
 
-        const conn = await getconn();
         let new_api_hit = 10;
         const conn = await getconn()
         if ( !req.headers["key"] ){
