@@ -332,7 +332,9 @@ router.post('/favorite',async(req,res)=>{
         else{
             await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
 
-            let id_game = req.body.id_game;
+            let id_game = req.body.id_game;            
+            query = `insert into history values(null, '${token}', ${id_game}, null, 'Add Favourite Game')`
+
             //INSERT INTO `favorite` (`id_favorite`, `email`, `id_game`, `tgl_favorite`) VALUES (NULL, 'gg', '44', current_timestamp());
             await executeQuery(conn,`insert into favorite values(NULL,'${userdata.email}','${parseInt(id_game)}', current_timestamp())`);
             conn.release()
@@ -443,6 +445,8 @@ router.post('/review',async(req,res)=>{
             await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
 
             let id_game = req.body.id_game;
+            query = `insert into history values(null, '${token}', ${id_game}, null, 'Add Review/Rating Game')`
+
             await executeQuery(conn,`insert into review values(NULL,'${userdata.email}','${parseInt(id_game)}', '${parseInt(rating)}', '${review}')`);
             conn.release()
             msg = "berhasil menambahkan review";
