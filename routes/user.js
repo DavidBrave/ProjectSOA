@@ -476,7 +476,6 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
     try {
 
         let new_api_hit = 10;
-        const conn = await getconn()
         if ( !req.headers["key"] ){
             msg = "unauthorized"
             return res.status(401).send({"msg" : msg})
