@@ -4,19 +4,19 @@ const mysql = require("mysql")
 const morgan = require("morgan")
 const fs = require("fs")
 
-// const pool = mysql.createPool({
-//     host : "localhost",
-//     database : "proyek_soa",
-//     user : "root",
-//     password : "",
-// })
-
 const pool = mysql.createPool({
-    host : "185.232.14.1",
-    database : "u855625606_ProjectSOA",
-    user : "u855625606_ProjectSOA",
-    password : "ProjectSOA2021",
+    host : "localhost",
+    database : "proyek_soa",
+    user : "root",
+    password : "",
 })
+
+// const pool = mysql.createPool({
+//     host : "185.232.14.1",
+//     database : "u855625606_ProjectSOA",
+//     user : "u855625606_ProjectSOA",
+//     password : "ProjectSOA2021",
+// })
 
 const axios = require("axios")
 const multer = require("multer")
@@ -75,10 +75,10 @@ function executeQuery(conn,q) {
 
 
 app.get('/id/:id', async function (req, res) {
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
+    // if ( !req.headers["key"] ){
+    //     msg = "unauthorized"
+    //     return res.status(401).send({"msg" : msg})
+    // }
 
     let idGame=req.params.id;
         if(isNaN(idGame)){
@@ -132,10 +132,6 @@ app.get('/id/:id', async function (req, res) {
 })
 
 app.get('/search/:keyword', async function (req, res) {
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
     let keyword=req.params.keyword;
     let query = `https://api.rawg.io/api/games?key=${apikey}&search=${keyword}`;
     try {
@@ -173,10 +169,6 @@ app.get('/search/:keyword', async function (req, res) {
 })
 
 app.get('/listall', async function (req, res) {
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
     let page=req.query.page;
     let query = `https://api.rawg.io/api/games?key=${apikey}&page=${page}`;
     try {
@@ -203,10 +195,6 @@ app.get('/listall', async function (req, res) {
 })
 
 app.get('/filter', async function (req, res) {
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
     let genre=req.query.genre;
     let page=req.query.page;
     let startYear=req.query.start_year;

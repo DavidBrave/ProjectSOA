@@ -1,0 +1,648 @@
+{
+	"info": {
+		"_postman_id": "2b4bfd4a-9dff-4ea7-a064-21dda65d267f",
+		"name": "proyek soa",
+		"description": "Project tentang api games\n\nWebservice ini menyediakan pelayanan api untuk games, dimana tidak hanya menampilkan games-games yang ada tapi juga dapat digunakan untuk melihat jumlah favorit games-games tersebut",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "register",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// pm.sendRequest({\r",
+									"//       url:  pm.environment.get(\"base_url\")+\"/mahasiswa/\",\r",
+									"//       method: 'POST',\r",
+									"//       body: {\r",
+									"//           mode: 'formdata',\r",
+									"//           urlencoded: [\r",
+									"//             {key: \"email\", value: \"premium4@gmail.com\"},\r",
+									"//             {key: \"password\", value: \"premium\"},\r",
+									"//             {key: \"nama_user\", value: \"userP4\"},\r",
+									"//             {key: \"jenis_user\", value: \"N\"},\r",
+									"//             {key: \"gambar_profile\", value: \"evan\"},\r",
+									"//         ]\r",
+									"//       }\r",
+									"//   }, function (err, res) {\r",
+									"        \r",
+									"// });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "premium4@gmail.com",
+									"description": "email dari user yang akan diregisterkan",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "premium",
+									"type": "text"
+								},
+								{
+									"key": "nama_user",
+									"value": "userP4",
+									"type": "text"
+								},
+								{
+									"key": "jenis_user",
+									"value": "N",
+									"type": "text"
+								},
+								{
+									"key": "gambar_profile",
+									"type": "file",
+									"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/back.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/user/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"register"
+							]
+						},
+						"description": "Endpoint ini berfungsi untuk melakukan register akun para user baru\n\nPada endpoint ini, user baru harus memasukkan parameter email, password, nama_user, jenis_user, gambar_profile\n\nnote : email tidak boleh kembar dan gambar harus diupload"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"      url:  pm.environment.get(\"base_url\")+\"/mahasiswa/\",\r",
+									"      method: 'POST',\r",
+									"      body: {\r",
+									"          mode: 'urlencoded',\r",
+									"          urlencoded: [\r",
+									"            {key: \"email\", value: \"premium4@gmail.com\"},\r",
+									"            {key: \"password\", value: \"premium\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, function (err, res) {\r",
+									"        \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "premium4@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "premium",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/user/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"login"
+							]
+						},
+						"description": "Request yang digunakan untuk login user\n\nsetelah login, maka user akan mendapatkan apikeynya yang dapat digunakan untuk mengakses beberapa request-request lainnya yang membutuhkan apikey"
+					},
+					"response": []
+				},
+				{
+					"name": "get history",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5vcm1hbDFAZ21haWwuY29tIiwibmFtYSI6InVzZXJOMSIsImplbmlzIjoiTiIsImlhdCI6MTYyMTAwOTk4NywiZXhwIjoxNjIxMDMxNTg3fQ.UmGAPjwEjmvVnGgbSbjavuuSaS6sSeER9jjweZSMFIA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/user/history",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"history"
+							]
+						},
+						"description": "Request untuk mendapatkan history dari user. \n\nHistory ini akan berisi informasi mengenai kegiatan user seperti, user telah melihat detail game, sudah mem-favorit game, dan menghapus rating/review\n\nnote : untuk menggunakan fitur ini user harus login terlebih dahulu"
+					},
+					"response": []
+				},
+				{
+					"name": "delete history",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/user/history",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"history"
+							]
+						},
+						"description": "Request yang digunakan untuk menghapus history user\n\nnote : penghapusan history ini tidak menggunakan soft delete sehingga langsung menghapus dari database"
+					},
+					"response": []
+				},
+				{
+					"name": "topUp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2OTM0OSwiZXhwIjoxNjIxMTkwOTQ5fQ.XxZRSoAP-eP_Yw-JqHkHh7mV1ilAL3yfbSBk6H5isBE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "total_api_hit",
+									"value": "10",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/user/topUp",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"topUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add favorite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2NzIxNiwiZXhwIjoxNjIxMTg4ODE2fQ.tS0BGpTlUqiLBxY9cDWexpcoC5sexv2xlvDYMq28Ovs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "3498",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/user/favorite",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"favorite"
+							]
+						},
+						"description": "request ini digunakan jika user menyukai suatu game tertentu dan berguna untuk meningkatkan popularitas game.\n\npada request ini user diwajibkan login terlebih dahulu dan menyertakan key pada header\n\npada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\napi hit yang dikenakan adalah sebesar 10 hit point."
+					},
+					"response": []
+				},
+				{
+					"name": "favorite",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2NzIxNiwiZXhwIjoxNjIxMTg4ODE2fQ.tS0BGpTlUqiLBxY9cDWexpcoC5sexv2xlvDYMq28Ovs",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "localhost:3000/api/user/favorite",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"favorite"
+							]
+						},
+						"description": "request ini digunakan untuk menampilkan semua games yang sebelumnya pernah di favoritkan oleh user.\n\npada request ini user diwajibkan login terlebih dahulu dan menyertakan key pada header\n\npada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\napi hit yang dikenakan adalah sebesar 5 hit point."
+					},
+					"response": []
+				},
+				{
+					"name": "review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTE2OTM0OSwiZXhwIjoxNjIxMTkwOTQ5fQ.XxZRSoAP-eP_Yw-JqHkHh7mV1ilAL3yfbSBk6H5isBE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "80",
+									"type": "text"
+								},
+								{
+									"key": "review",
+									"value": "mantul",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/api/user/review",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"review"
+							]
+						},
+						"description": "Request ini berguna untuk menambah review dan rating  pada suatu game yang telah ditetapkan oleh user\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 10 hit point."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Rating/Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "3498",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "40",
+									"type": "text"
+								},
+								{
+									"key": "review",
+									"value": "Ini review untuk gta 5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/review",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"review"
+							]
+						},
+						"description": "Request ini berguna untuk mengubah data review dan rating  pada suatu game yang ada dan telah ditetapkan oleh user\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 15 hit point."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Rating/Review",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "3498",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/review",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"review"
+							]
+						},
+						"description": "Request ini berguna untuk menghapus review dan rating dari database pada suatu game yang ada dan telah ditetapkan oleh user\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 5 hit point."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Favorite",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJyYXZlQGdtYWlsLmNvbSIsIm5hbWEiOiJCcmF2ZSIsImplbmlzIjoiUCIsImlhdCI6MTYyMjA3NDEwMywiZXhwIjoxNjIyMDk1NzAzfQ.fztbrJhu6C0LOGVU2KMmFgmd7C8HB_2U8MtDAuGXVBo",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "11",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/user/favorite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"favorite"
+							]
+						},
+						"description": "Request ini digunakan jika user ingin membatalkan favorite suatu game tertentu yang sebelumnya difavoritkan.\n\nPada request ini user diwajibkan login terlebih dahulu dan menyertakan key pada header\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 10 hit point."
+					},
+					"response": []
+				}
+			],
+			"description": "Kumpulan request yang digunakan untuk mengubah/menambah data user\n\nData-data ini bisa dimulai dari register user baru, menambah favorit, sampai menghapus history"
+		},
+		{
+			"name": "game",
+			"item": [
+				{
+					"name": "detailGame",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpY2t5QGdtYWlsLmNvbSIsIm5hbWEiOiJkaWNreSIsImplbmlzIjoiUCIsImlhdCI6MTYyMTM1MzIxMywiZXhwIjoxNjIxMzc0ODEzfQ.JC21XERIVyX2VK9owNtVLdJIJscgqSwsJlOQq2T9Oj0",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "localhost:3000/game/id/:id",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"game",
+								"id",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Request untuk mendapat detail dari game. Request ini akan membutuhkan id game dan akan mengembalikan data dari gamenya."
+					},
+					"response": []
+				},
+				{
+					"name": "searchGame",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/game/search/:keyword",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"game",
+								"search",
+								":keyword"
+							],
+							"variable": [
+								{
+									"key": "keyword",
+									"value": "portal"
+								}
+							]
+						},
+						"description": "Request ini akan mengembalikan array informasi game yang memiliki nama yang mengandung parameter yang dimasukkan. informasi game yang diberikan akan lebih singkat dari detail game"
+					},
+					"response": []
+				},
+				{
+					"name": "listAllGame",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/games/listall?page=10",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"games",
+								"listall"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Request ini dapat digunakan untuk mendapatkan semua game yang ada. Tapi akan dibatasi dengan halaman yang dimasukkan(paging)"
+					},
+					"response": []
+				},
+				{
+					"name": "filterGame",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/games/filter?genre=puzzle&page=2&start_year=2010&end_year=2014&rating_start=0&rating_end=4&metacritic_start=0&metacritic_end=70&playtime_start=0&playtime_end=3",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"games",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "genre",
+									"value": "puzzle"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "start_year",
+									"value": "2010"
+								},
+								{
+									"key": "end_year",
+									"value": "2014"
+								},
+								{
+									"key": "rating_start",
+									"value": "0"
+								},
+								{
+									"key": "rating_end",
+									"value": "4"
+								},
+								{
+									"key": "metacritic_start",
+									"value": "0"
+								},
+								{
+									"key": "metacritic_end",
+									"value": "70"
+								},
+								{
+									"key": "playtime_start",
+									"value": "0"
+								},
+								{
+									"key": "playtime_end",
+									"value": "3"
+								}
+							]
+						},
+						"description": "Mendapatkan semua  game berdasarkan filter(genre, tahun release, dll) yang ada dalam bentuk paging"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

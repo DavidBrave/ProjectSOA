@@ -7,7 +7,7 @@ const user = require("./routes/user")
 const game = require("./routes/game")
 
 app.use("/user",user)
-app.use("/game",game)// <-yang ini biarkan di sini
+app.use("/game",game)
 
 app.listen(3000)
 console.log("listening port : 3000")
