@@ -17,6 +17,7 @@ const pool = mysql.createPool({
     user : "u855625606_ProjectSOA",
     password : "ProjectSOA2021",
 })
+
 const axios = require("axios")
 const multer = require("multer")
 
@@ -168,7 +169,7 @@ router.get('/history',async(req,res)=>{
             return res.status(404).send({"msg" : msg})
         }
         
-        query = `select * from history where email='${userdata[0].email}'`
+        query = `select * from history where api_key='${token}'`
         let result = await executeQuery(conn,query)
         
         listHistory = []
@@ -178,9 +179,9 @@ router.get('/history',async(req,res)=>{
             query = `https://api.rawg.io/api/games/${history.id_game}?key=${apikey}`
             let game = await axios.get(query)
             let genre = "";
-            for (let i = 0; i < game.genres.length; i++) {
-                if ( i < game.genres.length-1 )genre = genre + ", " + game.genres[i].name
-                else genre = genre + game.genres[i].name
+            for (let i = 0; i < game.data.genres.length; i++) {
+                if ( i < game.data.genres.length-1 )genre = genre + ", " + game.data.genres[i].name
+                else genre = genre + game.data.genres[i].name
             }
             listHistory.push({
                 "Game" : game.name,
@@ -188,13 +189,12 @@ router.get('/history',async(req,res)=>{
                 "Search Date" : history.tgl_history,
                 "History Description" : history.deskripsi_history
             })
-            console.log(game.name);
         }
 
         msg = "history berhasil didapatkan"
         conn.release()
         return res.status(200).send({
-            "nama_user" : userdata.nama,
+            "nama_user" : userdata[0].nama_user,
             "List History" : listHistory 
         })
     } catch (error) {
@@ -218,7 +218,7 @@ router.delete('/history',async(req,res)=>{
             return res.status(404).send({"msg" : msg})
         }
         
-        query = `Delete history where email='${userdata[0].email}'`
+        query = `Delete from history where api_key='${token}'`
         await executeQuery(conn,query)
         
         msg = "history berhasil dibersihkan"
