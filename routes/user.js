@@ -261,7 +261,7 @@ function inrange(inputtxt)
         return false; 
     }
 }
-router.post('/topUp',async(req,res)=>{
+router.post('/topUpAPIhit',async(req,res)=>{
     try {
         const conn = await getconn()
         if ( !req.headers["key"] ){
@@ -306,6 +306,44 @@ router.post('/topUp',async(req,res)=>{
             msg = "berhasil top up api hit sebanyak " + total_api_hit + "api hit, dengan biaya " + biaya + " dan sisa saldo " + new_saldo;
             return res.status(400).send({"msg" : msg});
         }
+    } 
+    catch (error) {
+        return res.status(400).send(error)
+    }
+})
+
+router.post('/topUpSaldo',async(req,res)=>{
+    try {
+        const conn = await getconn()
+        if ( !req.headers["key"] ){
+            msg = "unauthorized"
+            return res.status(401).send({"msg" : msg})
+        }
+        let token = req.headers["key"]
+        query = `select * from user where api_key='${token}'`
+        let userdata = await executeQuery(conn,query)
+
+        if ( userdata.length==0 ){
+            msg = "data tidak ditemukan"
+            return res.status(404).send({"msg" : msg})
+        }
+        
+        let user = userdata;
+
+        let total_saldo = req.body.total_saldo;
+        
+        if(!numeric(total_saldo)){
+            msg = "total saldo harus angka!";
+            return res.status(400).send("total saldo harus angka!");
+        }
+
+        let old_saldo = user[0].saldo_user;
+        let new_saldo = old_saldo+(parseInt(total_saldo));
+
+        await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${userdata.email}'`);
+        conn.release()
+        msg = "berhasil top up saldo sebanyak " + new_saldo;
+        return res.status(400).send({"msg" : msg});
     } 
     catch (error) {
         return res.status(400).send(error)
