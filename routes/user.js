@@ -299,12 +299,12 @@ router.post('/topUpAPIhit',async(req,res)=>{
             let new_api_hit = old_api_hit+parseInt(total_api_hit);
             let biaya = 10*parseInt(total_api_hit);
 
-            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
-            await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${userdata.email}'`);
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${user[0].email}'`);
+            await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${user[0].email}'`);
 
             conn.release()
             msg = "berhasil top up api hit sebanyak " + total_api_hit + "api hit, dengan biaya " + biaya + " dan sisa saldo " + new_saldo;
-            return res.status(400).send({"msg" : msg});
+            return res.status(200).send({"msg" : msg});
         }
     } 
     catch (error) {
@@ -340,10 +340,10 @@ router.post('/topUpSaldo',async(req,res)=>{
         let old_saldo = user[0].saldo_user;
         let new_saldo = old_saldo+(parseInt(total_saldo));
 
-        await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${userdata.email}'`);
+        await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${user[0].email}'`);
         conn.release()
         msg = "berhasil top up saldo sebanyak " + new_saldo;
-        return res.status(400).send({"msg" : msg});
+        return res.status(200).send({"msg" : msg});
     } 
     catch (error) {
         return res.status(400).send(error)
@@ -513,6 +513,7 @@ router.post('/review',async(req,res)=>{
 router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
 
     try {
+        const conn = await getconn()
 
         let new_api_hit = 10;
         if ( !req.headers["key"] ){
@@ -544,10 +545,11 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
             msg = "Jenis user harus N atau P";
             return res.status(400).send({"msg" : msg});
         }
+        console.log();
 
         query = 
         `UPDATE user
-        SET password = '${pass}', nama_user = '${nama}', jenis_user = '${jenis}', gambar_profile = '${directory}' WHERE email = '${userdata.email}';`;
+        SET password = '${pass}', nama_user = '${nama}', jenis_user = '${jenis}', gambar_profile = '${directory}' WHERE email = '${result[0]["email"]}';`;
         const user = await executeQuery(conn, query);
         try {
             conn.release();
@@ -557,6 +559,7 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
         return res.status(200).send("Berhasil mengubah user");
 
     } catch (error) {
+        console.log(error);
         return res.status(400).send("Gagal mengubah user");
     }
 
@@ -657,7 +660,6 @@ router.put('/review',async(req,res)=>{
     
 });
 
-
 router.delete('/favorite',async(req,res)=>{
 
     const conn = await getconn()
@@ -722,8 +724,6 @@ router.delete('/favorite',async(req,res)=>{
 
 });
 
-
-
 router.delete('/review',async(req,res)=>{
 
     const conn = await getconn()
@@ -786,12 +786,5 @@ router.delete('/review',async(req,res)=>{
 
 
 });
-
-
-
-
-
-
-
 
 module.exports = router

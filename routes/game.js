@@ -75,10 +75,6 @@ function executeQuery(conn,q) {
 
 
 app.get('/id/:id', async function (req, res) {
-    // if ( !req.headers["key"] ){
-    //     msg = "unauthorized"
-    //     return res.status(401).send({"msg" : msg})
-    // }
 
     let idGame=req.params.id;
         if(isNaN(idGame)){
@@ -103,8 +99,9 @@ app.get('/id/:id', async function (req, res) {
             "reddit_name":game["data"]["reddit_name"],
             "reddit_url":game["data"]["reddit_url"],
         })
-        if ( req.headers["key"] ){
+        if (req.headers["key"]){
             let token = req.headers["key"]
+            console.log("ada key");
     
             const conn = await getconn()
             
@@ -133,7 +130,7 @@ app.get('/id/:id', async function (req, res) {
 
 app.get('/search/:keyword', async function (req, res) {
     let keyword=req.params.keyword;
-    let query = `https://api.rawg.io/api/games?key=${apikey}&search=${keyword}`;
+    let query = `https://api.rawg.io/api/games?key=${apikey}&search=${keyword}&-ordering=rating`;
     try {
         let game = await axios.get(query)
         let result=[];
@@ -170,6 +167,11 @@ app.get('/search/:keyword', async function (req, res) {
 
 app.get('/listall', async function (req, res) {
     let page=req.query.page;
+    
+    if(page==null){
+        page='1';
+    }
+    
     let query = `https://api.rawg.io/api/games?key=${apikey}&page=${page}`;
     try {
         let game = await axios.get(query)
