@@ -4,20 +4,19 @@ const mysql = require("mysql")
 const morgan = require("morgan")
 const fs = require("fs")
 
-const pool = mysql.createPool({
-    host : "localhost",
-    database : "proyek_soa",
-    user : "root",
-    password : "",
-})
-
 // const pool = mysql.createPool({
-//     host : "185.232.14.1",
-//     database : "u855625606_ProjectSOA",
-//     user : "u855625606_ProjectSOA",
-//     password : "ProjectSOA2021",
+//     host : "localhost",
+//     database : "proyek_soa",
+//     user : "root",
+//     password : "",
 // })
 
+const pool = mysql.createPool({
+    host : "185.232.14.1",
+    database : "u855625606_ProjectSOA",
+    user : "u855625606_ProjectSOA",
+    password : "ProjectSOA2021",
+})
 
 const axios = require("axios")
 const multer = require("multer")
@@ -144,7 +143,7 @@ router.post('/login', async(req,res)=>{
             return res.status(400).send({"msg" : msg})
         }
         conn.release()
-        return res.status(200).send({
+        return res.status(201).send({
             "nama" : user[0].nama_user,
             "key" : user[0].api_key,
         })
@@ -504,9 +503,6 @@ router.post('/review',async(req,res)=>{
         return res.status(400).send(error)
     }
 })
-
-
-
 
 //Brave
 
