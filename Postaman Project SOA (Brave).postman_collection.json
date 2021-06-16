@@ -1,0 +1,496 @@
+{
+	"info": {
+		"_postman_id": "a28d7a27-5496-4f87-99ad-59dfd5cd6429",
+		"name": "Postaman Project SOA (Brave)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Update User",
+			"item": [
+				{
+					"name": "Update Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"response berbentuk string(pesan)\", function(){\r",
+									"    pm.expect(jsonData).to.be.an(\"string\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"apikey ada\", () => {\r",
+									"    pm.request.to.have.header(\"key\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "key",
+								"value": "{{login_api_key}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nama_user",
+									"value": "DBrave",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "brave",
+									"type": "text"
+								},
+								{
+									"key": "jenis_user",
+									"value": "P",
+									"type": "text"
+								},
+								{
+									"key": "gambar_profile",
+									"type": "file",
+									"src": "/C:/Users/david/OneDrive/Gambar/D5lHTKDW4AU5bJg.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localhost_url}}/user/profile",
+							"host": [
+								"{{localhost_url}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update Rating",
+			"item": [
+				{
+					"name": "Update Rating/Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "key",
+								"value": "gzofIPiTBQPftuH",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "3498",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "40",
+									"type": "text"
+								},
+								{
+									"key": "review",
+									"value": "Ini review untuk gta 5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localhost_url}}/user/review",
+							"host": [
+								"{{localhost_url}}"
+							],
+							"path": [
+								"user",
+								"review"
+							]
+						},
+						"description": "Request ini berguna untuk mengubah data review dan rating  pada suatu game yang ada dan telah ditetapkan oleh user\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 15 hit point."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Favorite",
+			"item": [
+				{
+					"name": "Delete Favorite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"status code 200\", function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"const jsonData = pm.response.json();\r",
+									"pm.test(\"response berbentuk string(pesan)\", function(){\r",
+									"    pm.expect(jsonData).to.be.an(\"string\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"apikey ada\", () => {\r",
+									"    pm.request.to.have.header(\"key\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "key",
+								"value": "gzofIPiTBQPftuH",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "3498",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localhost_url}}/user/favorite",
+							"host": [
+								"{{localhost_url}}"
+							],
+							"path": [
+								"user",
+								"favorite"
+							]
+						},
+						"description": "Request ini digunakan jika user ingin membatalkan favorite suatu game tertentu yang sebelumnya difavoritkan.\n\nPada request ini user diwajibkan login terlebih dahulu dan menyertakan key pada header\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 10 hit point."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Rating",
+			"item": [
+				{
+					"name": "Delete Rating/Review",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "key",
+								"value": "gzofIPiTBQPftuH",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "id_game",
+									"value": "3498",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{localhost_url}}/user/review",
+							"host": [
+								"{{localhost_url}}"
+							],
+							"path": [
+								"user",
+								"review"
+							]
+						},
+						"description": "Request ini berguna untuk menghapus review dan rating dari database pada suatu game yang ada dan telah ditetapkan oleh user\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 5 hit point."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// pm.sendRequest({\r",
+							"//       url:  pm.environment.get(\"base_url\")+\"/mahasiswa/\",\r",
+							"//       method: 'POST',\r",
+							"//       body: {\r",
+							"//           mode: 'formdata',\r",
+							"//           urlencoded: [\r",
+							"//             {key: \"email\", value: \"premium4@gmail.com\"},\r",
+							"//             {key: \"password\", value: \"premium\"},\r",
+							"//             {key: \"nama_user\", value: \"userP4\"},\r",
+							"//             {key: \"jenis_user\", value: \"N\"},\r",
+							"//             {key: \"gambar_profile\", value: \"evan\"},\r",
+							"//         ]\r",
+							"//       }\r",
+							"//   }, function (err, res) {\r",
+							"        \r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "premium4@gmail.com",
+							"description": "email dari user yang akan diregisterkan",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "premium",
+							"type": "text"
+						},
+						{
+							"key": "nama_user",
+							"value": "userP4",
+							"type": "text"
+						},
+						{
+							"key": "jenis_user",
+							"value": "N",
+							"type": "text"
+						},
+						{
+							"key": "gambar_profile",
+							"type": "file",
+							"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/back.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/user/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"register"
+					]
+				},
+				"description": "Endpoint ini berfungsi untuk melakukan register akun para user baru\n\nPada endpoint ini, user baru harus memasukkan parameter email, password, nama_user, jenis_user, gambar_profile\n\nnote : email tidak boleh kembar dan gambar harus diupload"
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// pm.sendRequest({\r",
+							"//       url:  pm.environment.get(\"base_url\")+\"/mahasiswa/\",\r",
+							"//       method: 'POST',\r",
+							"//       body: {\r",
+							"//           mode: 'urlencoded',\r",
+							"//           urlencoded: [\r",
+							"//             {key: \"email\", value: \"premium4@gmail.com\"},\r",
+							"//             {key: \"password\", value: \"premium\"},\r",
+							"//         ]\r",
+							"//       }\r",
+							"//   }, function (err, res) {\r",
+							"        \r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "premium4@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "premium",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost_url}}/user/login",
+					"host": [
+						"{{localhost_url}}"
+					],
+					"path": [
+						"user",
+						"login"
+					]
+				},
+				"description": "Request yang digunakan untuk login user\n\nsetelah login, maka user akan mendapatkan apikeynya yang dapat digunakan untuk mengakses beberapa request-request lainnya yang membutuhkan apikey"
+			},
+			"response": []
+		},
+		{
+			"name": "Add Rating/Review",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "key",
+						"value": "gzofIPiTBQPftuH",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "3498",
+							"type": "text"
+						},
+						{
+							"key": "rating",
+							"value": "80",
+							"type": "text"
+						},
+						{
+							"key": "review",
+							"value": "Good Game",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost_url}}/user/review",
+					"host": [
+						"{{localhost_url}}"
+					],
+					"path": [
+						"user",
+						"review"
+					]
+				},
+				"description": "Request ini berguna untuk menambah review dan rating  pada suatu game yang telah ditetapkan oleh user\n\nPada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\nApi hit yang dikenakan adalah sebesar 10 hit point."
+			},
+			"response": []
+		},
+		{
+			"name": "Add Favorite",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "key",
+						"value": "{{login_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id_game",
+							"value": "3498",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{localhost_url}}/user/favorite",
+					"host": [
+						"{{localhost_url}}"
+					],
+					"path": [
+						"user",
+						"favorite"
+					]
+				},
+				"description": "request ini digunakan jika user menyukai suatu game tertentu dan berguna untuk meningkatkan popularitas game.\n\npada request ini user diwajibkan login terlebih dahulu dan menyertakan key pada header\n\npada request ini user harus menggunakan api hit agar bisa menggunakan request endpoint ini.\napi hit yang dikenakan adalah sebesar 10 hit point."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "localhost_url",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "hosting_url",
+			"value": ""
+		},
+		{
+			"key": "login_api_key",
+			"value": "ZWbZox88zshGM9i"
+		}
+	]
+}

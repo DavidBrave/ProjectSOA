@@ -298,12 +298,12 @@ router.post('/topUpAPIhit',async(req,res)=>{
             let new_api_hit = old_api_hit+parseInt(total_api_hit);
             let biaya = 10*parseInt(total_api_hit);
 
-            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
-            await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${userdata.email}'`);
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${user[0].email}'`);
+            await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${user[0].email}'`);
 
             conn.release()
             msg = "berhasil top up api hit sebanyak " + total_api_hit + "api hit, dengan biaya " + biaya + " dan sisa saldo " + new_saldo;
-            return res.status(400).send({"msg" : msg});
+            return res.status(200).send({"msg" : msg});
         }
     } 
     catch (error) {
@@ -339,10 +339,10 @@ router.post('/topUpSaldo',async(req,res)=>{
         let old_saldo = user[0].saldo_user;
         let new_saldo = old_saldo+(parseInt(total_saldo));
 
-        await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${userdata.email}'`);
+        await executeQuery(conn,`update user set saldo_user = ${new_saldo} where email = '${user[0].email}'`);
         conn.release()
         msg = "berhasil top up saldo sebanyak " + new_saldo;
-        return res.status(400).send({"msg" : msg});
+        return res.status(200).send({"msg" : msg});
     } 
     catch (error) {
         return res.status(400).send(error)
@@ -504,285 +504,634 @@ router.post('/review',async(req,res)=>{
     }
 })
 
+
+
 //Brave
 
-router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
 
+//Cleanup Code
+router.put('/profile', uploads.single('gambar_profile'), async(req,res)=>{
+
+    let pass = req.body.password;
+    let nama = req.body.nama_user;
+    let jenis = req.body.jenis_user;
+    let directory = "./uploads/" + req.file.filename;
+
+
+
+    let token = null;
+    try {
+        if ( !req.headers["key"] ){
+            msg = "Unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+
+        token = req.headers["key"];
+
+    } catch (error) {
+        msg = "Unauthorized";
+        return res.status(401).send({"msg" : msg});
+    }
+
+
+
+    let conn = null;
+    let list_user = null;
+    let user_now = null;
     try {
 
-        let new_api_hit = 10;
-        if ( !req.headers["key"] ){
-            msg = "unauthorized"
-            return res.status(401).send({"msg" : msg})
-        }
-        let token = req.headers["key"]
-        query = `select * from user where api_key='${token}'`
-        let userdata = await executeQuery(conn,query)
+        conn = await getconn();
+        query = `select * from user where api_key = '${token}'`;
+        list_user = await executeQuery(conn,query);
 
-        if ( userdata.length==0 ){
-            msg = "data tidak ditemukan"
-            return res.status(404).send({"msg" : msg})
-        }
-        
-        let result = userdata;
-
-        let pass = req.body.password;
-        let nama = req.body.nama_user;
-        let jenis = req.body.jenis_user;
-        let directory = "./uploads" + req.file.filename;
-
-        if ( result.length < 1 ){
-            msg = "Email tidak ditemukan";
+        if (list_user.length < 1) {
+            msg = "User Tidak Ditemukan";
             return res.status(404).send({"msg" : msg});
         }
 
-        if ( jenis != "N" && jenis != "P" ){
-            msg = "Jenis user harus N atau P";
-            return res.status(400).send({"msg" : msg});
-        }
-
-        query = 
-        `UPDATE user
-        SET password = '${pass}', nama_user = '${nama}', jenis_user = '${jenis}', gambar_profile = '${directory}' WHERE email = '${userdata.email}';`;
-        const user = await executeQuery(conn, query);
-        try {
-            conn.release();
-        } catch (error) {
-            
-        }
-        return res.status(200).send("Berhasil mengubah user");
+        user_now = list_user[0];
 
     } catch (error) {
-        return res.status(400).send("Gagal mengubah user");
-    }
-
-    
-
-});
-
-router.put('/review',async(req,res)=>{
-
-    const conn = await getconn()
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
-    let token = req.headers["key"]
-    query = `select * from user where api_key='${token}'`
-    let userdata = await executeQuery(conn,query)
-
-    if ( userdata.length==0 ){
-        msg = "data tidak ditemukan"
-        return res.status(404).send({"msg" : msg})
-    }
-    
-    let user = userdata;
-        try {
-            //console.log("masuk try");
-
-
-            let id_game = req.body.id_game;
-            let rating = req.body.rating;
-            let review = req.body.review;
-
-            //cek rating
-            if(10 >= parseInt(rating) || parseInt(rating) >= 100){
-                msg = "rating harus 10 sampai 100";
-                return res.status(400).send("rating harus 10 sampai 100");
-            }
-            if (!numeric(rating)) {
-                msg = "rating harus angka!";
-                return res.status(400).send("rating harus angka!");
-            }
-            
-
-            let old_api_hit = user[0].api_hit;
-            new_api_hit = old_api_hit - 10;
-
-            //cek api hit cukup/tidak
-            if(new_api_hit < 0){
-                msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
-                return res.status(400).send({"msg" : msg});
-            }
-            else{
-
-                //console.log("api cukup");
-
-                let query = `UPDATE review SET rating = ${rating}, review = '${review}' WHERE email = '${userdata.email}' AND id_game = '${id_game}';`;
-
-
-                //console.log("update review");
-
-                let result = await executeQuery(conn, query);
-                conn.release();
-
-                //console.log(result.length);
-
-                if (result.length < 1) {
-                    
-                    msg = "Review gagal diubah";
-                    return res.status(400).send({"msg" : msg});
-                }
-                else 
-                {
-                    msg = "Berhasil mengubah review";
-                    
-                    
-                }
-
-
-            }
-        } 
-        catch (error) {
-            return res.status(400).send("Review gagal diubah")
-        }
-
-
-        let update_api_hit = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
-        try {
-            conn.release();
-        } catch (error) {
-            
-        }
-        
-
-        msg = "Berhasil mengubah review";
-        return res.status(200).send({"msg" : msg});
-        console.log("return");
-
-    
-});
-
-
-router.delete('/favorite',async(req,res)=>{
-
-    const conn = await getconn()
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
-    let token = req.headers["key"]
-    query = `select * from user where api_key='${token}'`
-    let userdata = await executeQuery(conn,query)
-
-    if ( userdata.length==0 ){
-        msg = "data tidak ditemukan"
-        return res.status(404).send({"msg" : msg})
-    }
-    
-    let user = userdata;
-
-    let new_api_hit = 10;
-
-    try {
-        let old_api_hit = user[0].api_hit;
-        new_api_hit = old_api_hit - 10;
-
-        //cek api hit cukup/tidak
-        if(new_api_hit < 0){
-            msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
-            return res.status(400).send({"msg" : msg});
-        }
-    } 
-    catch (error) {
-        return res.status(400).send("Gagal menghapus favorite")
-    }
-
-    let id_game = req.body.id_game;
-    let query = `DELETE FROM favorite WHERE email = '${userdata.email}' AND id_game = '${id_game}';`;
-
-    let result = await executeQuery(conn, query);
-    try {
-        conn.release();
-    } catch (error) {
-        
-    }
-
-    if (result.length < 1) {
-        msg = "Favorite tidak berhasil dihapus";
+        msg = "Gagal Menyambung Ke Database";
         return res.status(400).send({"msg" : msg});
     }
-    else 
-    {
-        await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
+
+    if ( jenis != "N" && jenis != "P" ){
+        msg = "Jenis User Harus N Atau P";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    try {
+        
+        query = 
+        `UPDATE user
+        SET password = '${pass}', nama_user = '${nama}', 
+        jenis_user = '${jenis}', gambar_profile = '${directory}' 
+        WHERE email = '${user_now["email"]}';`;
+        const update_user = await executeQuery(conn, query);
         try {
             conn.release();
         } catch (error) {
             
         }
-        
+
+        let response = {
+            "status" : "Success",
+            "message" : "Berhasil Mengubah User",
+            "email" : user_now.email,
+            "nama_user" : nama,
+            "jenis_user" : jenis,
+            "gambar_profile" : directory
+        }
+
+        return res.status(200).send(response);
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Mengubah Data User";
+        return res.status(400).send({"msg" : msg});
     }
 
-    msg = "Berhasil menghapus favorite";
-    return res.status(200).send({"msg" : msg});
+    
+    
+    msg = "Gagal Menghubungi Server";
+    return res.status(500).send({"msg" : msg});
 
 });
+
+
+
+router.put('/review', async(req,res)=>{
+
+    let id_game = req.body.id_game;
+    let rating = req.body.rating;
+    let review = req.body.review;
+
+
+
+
+    let token = null;
+    try {
+        if ( !req.headers["key"] ){
+            msg = "Unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+
+        token = req.headers["key"];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Unauthorized";
+        return res.status(401).send({"msg" : msg});
+    }
+
+
+
+    let conn = null;
+    let list_user = null;
+    let user_now = null;
+    try {
+
+        conn = await getconn();
+        query = `select * from user where api_key = '${token}'`;
+        list_user = await executeQuery(conn,query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        if (list_user.length < 1) {
+            msg = "User Tidak Ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+        user_now = list_user[0];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menyambung Ke Database";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    let list_review = null;
+    try {
+        
+        conn = await getconn();
+        query = `select * from review where api_key = '${token}' AND id_game = '${id_game}'`;
+        list_review = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        if (list_review.length < 1) {
+            msg = "Review Tidak Ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menyambung Ke Database";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    //cek rating
+    if(parseInt(rating) < 1 || parseInt(rating) >= 100){
+        msg = "Rating Harus Bernilai 1 Sampai Dengan 100";
+        return res.status(400).send({"msg" : msg});
+    }
+    if (!numeric(rating)) {
+        msg = "Rating Harus Berupa Angka!";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    try {
+
+        query = 
+        `insert into history 
+        values(null, '${token}', ${id_game}, null, 'Update Review/Rating Game')`
+
+        const add_history = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menambah History";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    let old_api_hit = user_now.api_hit;
+    let new_api_hit = old_api_hit - 10;
+
+    //cek api hit cukup/tidak
+    if(new_api_hit < 0){
+        msg = "Api Hit Tidak Mencukupi, Silahkan Top Up Terlebih Dahulu";
+        return res.status(400).send({"msg" : msg});
+    }
+
+    try {
+
+        query = 
+        `UPDATE user 
+        SET api_hit = ${new_api_hit}
+        WHERE api_key = '${token}';`;
+
+        const update_user = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Merubah API User";
+        return res.status(400).send({"msg" : msg});
+    }
+
+    
+
+    try {
+        
+        query = 
+        `UPDATE review 
+        SET rating = ${rating}, review = '${review}' 
+        WHERE api_key = '${token}' AND id_game = '${id_game}';`;
+
+        const update_review = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        let response = {
+            "status" : "Success",
+            "message" : "Berhasil Mengubah Review",
+            "rating" : rating,
+            "review" : review,
+            "id_game" : id_game,
+            "old_api_hit" : old_api_hit,
+            "new_api_hit" :new_api_hit
+        }
+
+        return res.status(200).send(response);
+
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Merubah Review";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    msg = "Gagal Merubah Review";
+    return res.status(500).send({"msg" : msg});
+
+
+});
+
+
+
 
 
 
 router.delete('/review',async(req,res)=>{
 
-    const conn = await getconn()
-    if ( !req.headers["key"] ){
-        msg = "unauthorized"
-        return res.status(401).send({"msg" : msg})
-    }
-    let token = req.headers["key"]
-    query = `select * from user where api_key='${token}'`
-    let userdata = await executeQuery(conn,query)
-
-    if ( userdata.length==0 ){
-        msg = "data tidak ditemukan"
-        return res.status(404).send({"msg" : msg})
-    }
-    
-    let user = userdata;
 
     let id_game = req.body.id_game;
 
-    let new_api_hit = 10;
 
+
+    let token = null;
     try {
-
-        let old_api_hit = user[0].api_hit;
-        new_api_hit = old_api_hit-10;
-
-        //cek api hit cukup/tidak
-        if(new_api_hit < 0){
-            msg = "api hit tidak mencukupi, silahkan top up terlebih dahulu";
-            return res.status(400).send({"msg" : msg});
+        if ( !req.headers["key"] ){
+            msg = "Unauthorized";
+            return res.status(401).send({"msg" : msg});
         }
-    } 
-    catch (error) {
-        return res.status(400).send("Gagal menghapus")
+
+        token = req.headers["key"];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Unauthorized";
+        return res.status(401).send({"msg" : msg});
     }
 
-    let result = null;
+
+
+    let conn = null;
+    let list_user = null;
+    let user_now = null;
+    try {
+
+        conn = await getconn();
+        query = `select * from user where api_key = '${token}'`;
+        list_user = await executeQuery(conn,query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        if (list_user.length < 1) {
+            msg = "User Tidak Ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+        user_now = list_user[0];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menyambung Ke Database";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    let list_review = null;
+    let review_now = null;
     try {
         
-        result = await executeQuery(conn,`DELETE from review WHERE email = '${userdata.email}' AND id_game = '${id_game}';`);
-        conn.release();
+        conn = await getconn();
+        query = `select * from review where api_key = '${token}' AND id_game = '${id_game}'`;
+        list_review = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        if (list_review.length < 1) {
+            msg = "Review Tidak Ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+        review_now = list_review[0];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menyambung Ke Database";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    try {
+
+        query = 
+        `insert into history 
+        values(null, '${token}', ${id_game}, null, 'Delete Review/Rating Game')`
+
+        const add_history = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menambah History";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    let old_api_hit = user_now.api_hit;
+    let new_api_hit = old_api_hit - 10;
+
+    //cek api hit cukup/tidak
+    if(new_api_hit < 0){
+        msg = "Api Hit Tidak Mencukupi, Silahkan Top Up Terlebih Dahulu";
+        return res.status(400).send({"msg" : msg});
+    }
+
+    try {
+
+        query = 
+        `UPDATE user 
+        SET api_hit = ${new_api_hit}
+        WHERE api_key = '${token}';`;
+
+        const update_user = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Merubah API User";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    try {
+        
+        query = 
+        `DELETE FROM review 
+        WHERE api_key = '${token}' AND id_game = '${id_game}';`;
+
+        const update_review = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        let response = {
+            "status" : "Success",
+            "message" : "Berhasil Menghapus Review",
+            "id_review" : review_now.id_review,
+            "id_game" : id_game,
+            "old_api_hit" : old_api_hit,
+            "new_api_hit" :new_api_hit
+        }
+
+        return res.status(200).send(response);
 
 
     } catch (error) {
-        return res.status(400).send("Gagal menghapus review");
+        console.log(error);
+        msg = "Gagal Menghapus Review";
+        return res.status(400).send({"msg" : msg});
     }
 
 
-    if (result.length < 1) {
-        return res.status(400).send("Gagal menghapus review");
-    }
-    else {
-        result = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
-    }
-    
+    msg = "Gagal Menghapus Review";
+    return res.status(500).send({"msg" : msg});
 
-    msg = "Berhasil menghapus review";
-    return res.status(200).send({"msg" : msg});
 
 
 });
 
+
+
+
+router.delete('/favorite',async(req,res)=>{
+
+    let id_game = req.body.id_game;
+
+
+
+    let token = null;
+    try {
+        if ( !req.headers["key"] ){
+            msg = "Unauthorized";
+            return res.status(401).send({"msg" : msg});
+        }
+
+        token = req.headers["key"];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Unauthorized";
+        return res.status(401).send({"msg" : msg});
+    }
+
+
+
+    let conn = null;
+    let list_user = null;
+    let user_now = null;
+    try {
+
+        conn = await getconn();
+        query = `select * from user where api_key = '${token}'`;
+        list_user = await executeQuery(conn,query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        if (list_user.length < 1) {
+            msg = "User Tidak Ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+        user_now = list_user[0];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menyambung Ke Database";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    let list_favorite = null;
+    let favorite_now = null;
+    try {
+        
+        conn = await getconn();
+        query = `select * from favorite where api_key = '${token}' AND id_game = '${id_game}'`;
+        list_favorite = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        if (list_favorite.length < 1) {
+            msg = "Favorite Tidak Ditemukan";
+            return res.status(404).send({"msg" : msg});
+        }
+
+        favorite_now = list_favorite[0];
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menyambung Ke Database";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    try {
+
+        query = 
+        `insert into history 
+        values(null, '${token}', ${id_game}, null, 'Delete Favorite Game')`
+
+        const add_history = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menambah History";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+
+    let old_api_hit = user_now.api_hit;
+    let new_api_hit = old_api_hit - 10;
+
+    //cek api hit cukup/tidak
+    if(new_api_hit < 0){
+        msg = "Api Hit Tidak Mencukupi, Silahkan Top Up Terlebih Dahulu";
+        return res.status(400).send({"msg" : msg});
+    }
+
+    try {
+
+        query = 
+        `UPDATE user 
+        SET api_hit = ${new_api_hit}
+        WHERE api_key = '${token}';`;
+
+        const update_user = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Merubah API User";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    try {
+        
+        query = 
+        `DELETE FROM favorite 
+        WHERE api_key = '${token}' AND id_game = '${id_game}';`;
+
+        const delete_favorite = await executeQuery(conn, query);
+        try {
+            conn.release();
+        } catch (error) {
+            
+        }
+
+        let response = {
+            "status" : "Success",
+            "message" : "Berhasil Menghapus Favorite",
+            "id_favorite" : favorite_now.id_favorite,
+            "id_game" : id_game,
+            "old_api_hit" : old_api_hit,
+            "new_api_hit" :new_api_hit
+        }
+
+        return res.status(200).send(response);
+
+
+    } catch (error) {
+        console.log(error);
+        msg = "Gagal Menghapus Favorite";
+        return res.status(400).send({"msg" : msg});
+    }
+
+
+    msg = "Gagal Menghapus Favorite";
+    return res.status(500).send({"msg" : msg});
+
+
+});
 
 
 
