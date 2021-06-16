@@ -496,7 +496,7 @@ router.post('/review',async(req,res)=>{
             await executeQuery(conn,`insert into review values(NULL,'${userdata.email}','${parseInt(id_game)}', '${parseInt(rating)}', '${review}')`);
             conn.release()
             msg = "berhasil menambahkan review";
-            return res.status(400).send({"msg" : msg});
+            return res.status(200).send({"msg" : msg});
         }
     } 
     catch (error) {
