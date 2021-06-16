@@ -83,7 +83,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "bbzPuB72TsMjDKF",
 										"type": "text"
 									}
 								],
@@ -92,13 +92,12 @@
 									"urlencoded": []
 								},
 								"url": {
-									"raw": "localhost:3000/api/user/favorite",
+									"raw": "localhost:3000/user/favorite",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
-										"api",
 										"user",
 										"favorite"
 									]
@@ -114,7 +113,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "bbzPuB72TsMjDKF",
 										"type": "text"
 									}
 								],
@@ -123,19 +122,18 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "3498",
+											"value": "4200",
 											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "localhost:3000/api/user/favorite",
+									"raw": "localhost:3000/user/favorite",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
-										"api",
 										"user",
 										"favorite"
 									]
@@ -173,7 +171,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "bbzPuB72TsMjDKF",
 										"type": "text"
 									}
 								],
@@ -182,7 +180,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "11",
+											"value": "4200",
 											"type": "text"
 										}
 									]
@@ -215,7 +213,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "bbzPuB72TsMjDKF",
 										"type": "text"
 									}
 								],
@@ -224,7 +222,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "1",
+											"value": "4200",
 											"type": "text"
 										},
 										{
@@ -234,19 +232,18 @@
 										},
 										{
 											"key": "review",
-											"value": "mantul",
+											"value": "review game portal 2",
 											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "localhost:3000/api/user/review",
+									"raw": "localhost:3000/user/review",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
-										"api",
 										"user",
 										"review"
 									]
@@ -262,7 +259,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "bbzPuB72TsMjDKF",
 										"type": "text"
 									}
 								],
@@ -271,17 +268,17 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "3498",
+											"value": "4200",
 											"type": "text"
 										},
 										{
 											"key": "rating",
-											"value": "40",
+											"value": "70",
 											"type": "text"
 										},
 										{
 											"key": "review",
-											"value": "Ini review untuk gta 5",
+											"value": "Ini review untuk portal2_2",
 											"type": "text"
 										}
 									]
@@ -309,7 +306,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "bbzPuB72TsMjDKF",
 										"type": "text"
 									}
 								],
@@ -318,7 +315,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "3498",
+											"value": "4200",
 											"type": "text"
 										}
 									]
@@ -377,29 +374,29 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "premium4@gmail.com",
+									"value": "jeffryyohanes48@gmail.com",
 									"description": "email dari user yang akan diregisterkan",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "premium",
+									"value": "jeffry",
 									"type": "text"
 								},
 								{
 									"key": "nama_user",
-									"value": "userP4",
+									"value": "jeffry yohanes",
 									"type": "text"
 								},
 								{
 									"key": "jenis_user",
-									"value": "N",
+									"value": "P",
 									"type": "text"
 								},
 								{
 									"key": "gambar_profile",
 									"type": "file",
-									"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/back.jpg"
+									"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/pic.jpg"
 								}
 							]
 						},
@@ -451,12 +448,12 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "premium4@gmail.com",
+									"value": "jeffryyohanes48@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "premium",
+									"value": "jeffry",
 									"type": "text"
 								}
 							]
@@ -483,7 +480,7 @@
 						"header": [
 							{
 								"key": "key",
-								"value": "bCgHg3LdrUsadDT",
+								"value": "bbzPuB72TsMjDKF",
 								"type": "text"
 							}
 						],
@@ -492,7 +489,7 @@
 							"urlencoded": [
 								{
 									"key": "total_api_hit",
-									"value": "10",
+									"value": "300",
 									"type": "text"
 								}
 							]
@@ -519,7 +516,7 @@
 						"header": [
 							{
 								"key": "key",
-								"value": "bCgHg3LdrUsadDT",
+								"value": "bbzPuB72TsMjDKF",
 								"type": "text"
 							}
 						],
@@ -528,7 +525,7 @@
 							"urlencoded": [
 								{
 									"key": "total_saldo",
-									"value": "10000",
+									"value": "100000",
 									"type": "text"
 								}
 							]
@@ -592,7 +589,7 @@
 							"formdata": [
 								{
 									"key": "nama_user",
-									"value": "ducky2",
+									"value": "ducky3",
 									"type": "text"
 								},
 								{
@@ -689,7 +686,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "4200"
 								}
 							]
 						},
@@ -734,7 +731,7 @@
 							"variable": [
 								{
 									"key": "keyword",
-									"value": "porta"
+									"value": "portal 2"
 								}
 							]
 						},
