@@ -82,27 +82,24 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"login berhasil\", function () {\r",
-							"    pm.response.to.have.status(201);\r",
-							"});\r",
-							"pm.test(\"berhasil menggunakan hosting\", function () { \r",
-							"    pm.expect(pm.environment.get(\"base_url\")).to.equal(\"185.232.14.1\"); \r",
-							"});\r",
-							"pm.test(\"response was successfull\", function () { \r",
-							"    pm.response.to.not.be.error; \r",
-							"    pm.response.to.have.jsonBody(\"key\"); \r",
-							"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-							"});\r",
-							""
+							"const tokenUrl = `${pm.environment.get(\"base_url\")}/user/login`;\r",
+							"\r",
+							"const getTokenRequest = {\r",
+							"  method: 'POST',\r",
+							"  url: tokenUrl,\r",
+							"  body: {\r",
+							"        mode: 'urlencoded',\r",
+							"        urlencoded: [\r",
+							"        {key: \"email\", value: \"normal1@gmail.com\"},\r",
+							"        {key: \"password\", value: \"normal\"}\r",
+							"        ] \r",
+							"    }\r",
+							"};\r",
+							"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+							"  const jsonResponse = response.json();\r",
+							"  const newAccessToken = jsonResponse.key;\r",
+							"  pm.environment.set('x-auth-token', newAccessToken);\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -115,13 +112,13 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
-							"key": "password",
-							"value": "normal",
+							"key": "email",
+							"value": "normal2@gmail.com",
 							"type": "text"
 						},
 						{
-							"key": "email",
-							"value": "normal2@gmail.com",
+							"key": "password",
+							"value": "normal",
 							"type": "text"
 						}
 					]
