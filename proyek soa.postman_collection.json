@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2b4bfd4a-9dff-4ea7-a064-21dda65d267f",
+		"_postman_id": "38bd1e3d-423a-4286-833f-5a2641d0906d",
 		"name": "proyek soa",
 		"description": "Project tentang api games\n\nWebservice ini menyediakan pelayanan api untuk games, dimana tidak hanya menampilkan games-games yang ada tapi juga dapat digunakan untuk melihat jumlah favorit games-games tersebut",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -14,12 +14,60 @@
 					"item": [
 						{
 							"name": "get history",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const tokenUrl = `${pm.environment.get(\"base_url\")}/user/login`;\r",
+											"\r",
+											"const getTokenRequest = {\r",
+											"  method: 'POST',\r",
+											"  url: tokenUrl,\r",
+											"  body: {\r",
+											"        mode: 'urlencoded',\r",
+											"        urlencoded: [\r",
+											"            {key: \"email\", value: \"premium4@gmail.com\"},\r",
+											"            {key: \"password\", value: \"premium\"},\r",
+											"        ] \r",
+											"    }\r",
+											"};\r",
+											"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+											"  const jsonResponse = response.json();\r",
+											"  const newAccessToken = jsonResponse.key;\r",
+											"  pm.environment.set('x-auth-token', newAccessToken);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Semua History berhasil ditampilkan\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"berhasil menggunakan hosting\", function () { \r",
+											"    pm.expect(pm.environment.get(\"base_url\")).to.equal(\"185.232.14.1\"); \r",
+											"});\r",
+											"pm.test(\"response was successfull\", function () { \r",
+											"    pm.response.to.not.be.error; \r",
+											"    pm.response.to.have.jsonBody(\"List History\"); \r",
+											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "GET",
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "{{x-auth-token}}",
 										"type": "text"
 									}
 								],
@@ -40,12 +88,61 @@
 						},
 						{
 							"name": "delete history",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const tokenUrl = `${pm.environment.get(\"base_url\")}/user/login`;\r",
+											"\r",
+											"const getTokenRequest = {\r",
+											"  method: 'POST',\r",
+											"  url: tokenUrl,\r",
+											"  body: {\r",
+											"        mode: 'urlencoded',\r",
+											"        urlencoded: [\r",
+											"            {key: \"email\", value: \"premium4@gmail.com\"},\r",
+											"            {key: \"password\", value: \"premium\"},\r",
+											"        ] \r",
+											"    }\r",
+											"};\r",
+											"pm.sendRequest(getTokenRequest, (err, response) => {\r",
+											"  const jsonResponse = response.json();\r",
+											"  const newAccessToken = jsonResponse.key;\r",
+											"  pm.environment.set('x-auth-token', newAccessToken);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Seluruh History berhasil dihapus\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"berhasil menggunakan hosting\", function () { \r",
+											"    pm.expect(pm.environment.get(\"base_url\")).to.equal(\"185.232.14.1\"); \r",
+											"});\r",
+											"pm.test(\"response was successfull\", function () { \r",
+											"    pm.response.to.not.be.error; \r",
+											"    pm.response.to.have.jsonBody(\"msg\",\"history berhasil dibersihkan\"); \r",
+											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "DELETE",
 								"header": [
 									{
 										"key": "key",
-										"value": "aDFEg2Hd4SwreaU",
+										"value": "{{x-auth-token}}",
 										"type": "text"
 									}
 								],
@@ -75,29 +172,6 @@
 					"item": [
 						{
 							"name": "favorite",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Favourite berhasil ditampilkan\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"apikey ada\", () => {\r",
-											"    pm.request.to.have.header(\"key\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"response was successfull\", function () { \r",
-											"    pm.response.to.not.be.error; \r",
-											"    pm.response.to.have.jsonBody(\"msg\",\"Favorite berhasil didapatkan\"); \r",
-											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -106,7 +180,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "bbzPuB72TsMjDKF",
+										"value": "aDFEg2Hd4SwreaU",
 										"type": "text"
 									}
 								],
@@ -115,12 +189,13 @@
 									"urlencoded": []
 								},
 								"url": {
-									"raw": "localhost:3000/user/favorite",
+									"raw": "localhost:3000/api/user/favorite",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
+										"api",
 										"user",
 										"favorite"
 									]
@@ -131,35 +206,12 @@
 						},
 						{
 							"name": "add favorite",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Berhasil Menambah Favourite Baru\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"apikey ada\", () => {\r",
-											"    pm.request.to.have.header(\"key\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"response was successfull\", function () { \r",
-											"    pm.response.to.not.be.error; \r",
-											"    pm.response.to.have.jsonBody(\"msg\",\"berhasil menambahkan favorite\"); \r",
-											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-											"})"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
 							"request": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "key",
-										"value": "bbzPuB72TsMjDKF",
+										"value": "aDFEg2Hd4SwreaU",
 										"type": "text"
 									}
 								],
@@ -168,18 +220,19 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "4200",
+											"value": "3498",
 											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "localhost:3000/user/favorite",
+									"raw": "localhost:3000/api/user/favorite",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
+										"api",
 										"user",
 										"favorite"
 									]
@@ -217,7 +270,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "bbzPuB72TsMjDKF",
+										"value": "aDFEg2Hd4SwreaU",
 										"type": "text"
 									}
 								],
@@ -226,7 +279,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "4200",
+											"value": "11",
 											"type": "text"
 										}
 									]
@@ -254,34 +307,12 @@
 					"item": [
 						{
 							"name": "add rating/review",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Semua History berhasil ditampilkan\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"apikey ada\", () => {\r",
-											"    pm.request.to.have.header(\"key\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"response was successfull\", function () { \r",
-											"    pm.response.to.not.be.error; \r",
-											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
 							"request": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "key",
-										"value": "bbzPuB72TsMjDKF",
+										"value": "aDFEg2Hd4SwreaU",
 										"type": "text"
 									}
 								],
@@ -290,7 +321,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "4200",
+											"value": "1",
 											"type": "text"
 										},
 										{
@@ -300,18 +331,19 @@
 										},
 										{
 											"key": "review",
-											"value": "review game portal 2",
+											"value": "mantul",
 											"type": "text"
 										}
 									]
 								},
 								"url": {
-									"raw": "localhost:3000/user/review",
+									"raw": "localhost:3000/api/user/review",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
+										"api",
 										"user",
 										"review"
 									]
@@ -327,7 +359,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "bbzPuB72TsMjDKF",
+										"value": "aDFEg2Hd4SwreaU",
 										"type": "text"
 									}
 								],
@@ -336,17 +368,17 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "4200",
+											"value": "3498",
 											"type": "text"
 										},
 										{
 											"key": "rating",
-											"value": "70",
+											"value": "40",
 											"type": "text"
 										},
 										{
 											"key": "review",
-											"value": "Ini review untuk portal2_2",
+											"value": "Ini review untuk gta 5",
 											"type": "text"
 										}
 									]
@@ -374,7 +406,7 @@
 								"header": [
 									{
 										"key": "key",
-										"value": "bbzPuB72TsMjDKF",
+										"value": "aDFEg2Hd4SwreaU",
 										"type": "text"
 									}
 								],
@@ -383,7 +415,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "4200",
+											"value": "3498",
 											"type": "text"
 										}
 									]
@@ -413,22 +445,42 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"// pm.sendRequest({\r",
-									"//       url:  pm.environment.get(\"base_url\")+\"/mahasiswa/\",\r",
-									"//       method: 'POST',\r",
-									"//       body: {\r",
-									"//           mode: 'formdata',\r",
-									"//           urlencoded: [\r",
-									"//             {key: \"email\", value: \"premium4@gmail.com\"},\r",
-									"//             {key: \"password\", value: \"premium\"},\r",
-									"//             {key: \"nama_user\", value: \"userP4\"},\r",
-									"//             {key: \"jenis_user\", value: \"N\"},\r",
-									"//             {key: \"gambar_profile\", value: \"evan\"},\r",
-									"//         ]\r",
-									"//       }\r",
-									"//   }, function (err, res) {\r",
+									"pm.sendRequest({\r",
+									"      url:  pm.environment.get(\"base_url\")+\"/user/register\",\r",
+									"      method: 'POST',\r",
+									"      body: {\r",
+									"          mode: 'formdata',\r",
+									"          urlencoded: [\r",
+									"            {key: \"email\", value: \"premium4@gmail.com\"},\r",
+									"            {key: \"password\", value: \"premium\"},\r",
+									"            {key: \"nama_user\", value: \"userP4\"},\r",
+									"            {key: \"jenis_user\", value: \"N\"},\r",
+									"            {key: \"gambar_profile\", value: \"evan\"},\r",
+									"        ]\r",
+									"      }\r",
+									"  }, function (err, res) {\r",
 									"        \r",
-									"// });"
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"register berhasil\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"berhasil menggunakan hosting\", function () { \r",
+									"    pm.expect(pm.environment.get(\"base_url\")).to.equal(\"185.232.14.1\"); \r",
+									"});\r",
+									"pm.test(\"response was successfull\", function () { \r",
+									"    pm.response.to.not.be.error; \r",
+									"    pm.response.to.have.jsonBody(\"nama\"); \r",
+									"    pm.response.to.not.have.jsonBody(\"error\"); \r",
+									"});\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -442,29 +494,29 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "jeffryyohanes48@gmail.com",
+									"value": "premium4@gmail.com",
 									"description": "email dari user yang akan diregisterkan",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "jeffry",
+									"value": "premium",
 									"type": "text"
 								},
 								{
 									"key": "nama_user",
-									"value": "jeffry yohanes",
+									"value": "userP4",
 									"type": "text"
 								},
 								{
 									"key": "jenis_user",
-									"value": "P",
+									"value": "N",
 									"type": "text"
 								},
 								{
 									"key": "gambar_profile",
 									"type": "file",
-									"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/pic.jpg"
+									"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/back.jpg"
 								}
 							]
 						},
@@ -491,7 +543,7 @@
 							"script": {
 								"exec": [
 									"pm.sendRequest({\r",
-									"      url:  pm.environment.get(\"base_url\")+\"/mahasiswa/\",\r",
+									"      url:  pm.environment.get(\"base_url\")+\"/user/login\",\r",
 									"      method: 'POST',\r",
 									"      body: {\r",
 									"          mode: 'urlencoded',\r",
@@ -506,6 +558,26 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"login berhasil\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"pm.test(\"berhasil menggunakan hosting\", function () { \r",
+									"    pm.expect(pm.environment.get(\"base_url\")).to.equal(\"185.232.14.1\"); \r",
+									"});\r",
+									"pm.test(\"response was successfull\", function () { \r",
+									"    pm.response.to.not.be.error; \r",
+									"    pm.response.to.have.jsonBody(\"key\"); \r",
+									"    pm.response.to.not.have.jsonBody(\"error\"); \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"request": {
@@ -516,12 +588,12 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "jeffryyohanes48@gmail.com",
+									"value": "premium4@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "jeffry",
+									"value": "premium",
 									"type": "text"
 								}
 							]
@@ -548,7 +620,7 @@
 						"header": [
 							{
 								"key": "key",
-								"value": "bbzPuB72TsMjDKF",
+								"value": "bCgHg3LdrUsadDT",
 								"type": "text"
 							}
 						],
@@ -557,7 +629,7 @@
 							"urlencoded": [
 								{
 									"key": "total_api_hit",
-									"value": "300",
+									"value": "10",
 									"type": "text"
 								}
 							]
@@ -584,7 +656,7 @@
 						"header": [
 							{
 								"key": "key",
-								"value": "bbzPuB72TsMjDKF",
+								"value": "bCgHg3LdrUsadDT",
 								"type": "text"
 							}
 						],
@@ -593,7 +665,7 @@
 							"urlencoded": [
 								{
 									"key": "total_saldo",
-									"value": "100000",
+									"value": "10000",
 									"type": "text"
 								}
 							]
@@ -657,7 +729,7 @@
 							"formdata": [
 								{
 									"key": "nama_user",
-									"value": "ducky3",
+									"value": "ducky2",
 									"type": "text"
 								},
 								{
@@ -754,7 +826,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "4200"
+									"value": "1"
 								}
 							]
 						},
@@ -799,7 +871,7 @@
 							"variable": [
 								{
 									"key": "keyword",
-									"value": "portal 2"
+									"value": "porta"
 								}
 							]
 						},
