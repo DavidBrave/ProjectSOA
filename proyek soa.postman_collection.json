@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0b782ba9-7e2d-4f0b-adff-d0ece9e68192",
+		"_postman_id": "2b4bfd4a-9dff-4ea7-a064-21dda65d267f",
 		"name": "proyek soa",
 		"description": "Project tentang api games\n\nWebservice ini menyediakan pelayanan api untuk games, dimana tidak hanya menampilkan games-games yang ada tapi juga dapat digunakan untuk melihat jumlah favorit games-games tersebut",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -75,29 +75,6 @@
 					"item": [
 						{
 							"name": "favorite",
-							"event": [
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Favourite berhasil ditampilkan\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"apikey ada\", () => {\r",
-											"    pm.request.to.have.header(\"key\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"response was successfull\", function () { \r",
-											"    pm.response.to.not.be.error; \r",
-											"    pm.response.to.have.jsonBody(\"msg\",\"Favorite berhasil didapatkan\"); \r",
-											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -115,13 +92,13 @@
 									"urlencoded": []
 								},
 								"url": {
-									"raw": "localhost:3000//user/favorite",
+									"raw": "localhost:3000/api/user/favorite",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
-										"",
+										"api",
 										"user",
 										"favorite"
 									]
@@ -132,38 +109,6 @@
 						},
 						{
 							"name": "add favorite",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Berhasil Menambah Favourite Baru\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"apikey ada\", () => {\r",
-											"    pm.request.to.have.header(\"key\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"response was successfull\", function () { \r",
-											"    pm.response.to.not.be.error; \r",
-											"    pm.response.to.have.jsonBody(\"msg\",\"berhasil menambahkan favorite\"); \r",
-											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-											"})"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
 							"request": {
 								"method": "POST",
 								"header": [
@@ -184,13 +129,13 @@
 									]
 								},
 								"url": {
-									"raw": "localhost:3000//user/favorite",
+									"raw": "localhost:3000/api/user/favorite",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
-										"",
+										"api",
 										"user",
 										"favorite"
 									]
@@ -265,37 +210,6 @@
 					"item": [
 						{
 							"name": "add rating/review",
-							"event": [
-								{
-									"listen": "prerequest",
-									"script": {
-										"exec": [
-											""
-										],
-										"type": "text/javascript"
-									}
-								},
-								{
-									"listen": "test",
-									"script": {
-										"exec": [
-											"pm.test(\"Semua History berhasil ditampilkan\", function () {\r",
-											"    pm.response.to.have.status(200);\r",
-											"});\r",
-											"\r",
-											"pm.test(\"apikey ada\", () => {\r",
-											"    pm.request.to.have.header(\"key\");\r",
-											"});\r",
-											"\r",
-											"pm.test(\"response was successfull\", function () { \r",
-											"    pm.response.to.not.be.error; \r",
-											"    pm.response.to.not.have.jsonBody(\"error\"); \r",
-											"});"
-										],
-										"type": "text/javascript"
-									}
-								}
-							],
 							"request": {
 								"method": "POST",
 								"header": [
