@@ -4,19 +4,19 @@ const mysql = require("mysql")
 const morgan = require("morgan")
 const fs = require("fs")
 
-const pool = mysql.createPool({
-    host : "localhost",
-    database : "proyek_soa",
-    user : "root",
-    password : "",
-})
-
 // const pool = mysql.createPool({
-//     host : "185.232.14.1",
-//     database : "u855625606_ProjectSOA",
-//     user : "u855625606_ProjectSOA",
-//     password : "ProjectSOA2021",
+//     host : "localhost",
+//     database : "proyek_soa",
+//     user : "root",
+//     password : "",
 // })
+
+const pool = mysql.createPool({
+    host : "185.232.14.1",
+    database : "u855625606_ProjectSOA",
+    user : "u855625606_ProjectSOA",
+    password : "ProjectSOA2021",
+})
 
 const axios = require("axios")
 const multer = require("multer")
@@ -143,7 +143,7 @@ router.post('/login', async(req,res)=>{
             return res.status(400).send({"msg" : msg})
         }
         conn.release()
-        return res.status(200).send({
+        return res.status(201).send({
             "nama" : user[0].nama_user,
             "key" : user[0].api_key,
         })
@@ -376,16 +376,16 @@ router.post('/favorite',async(req,res)=>{
             return res.status(400).send({"msg" : msg});
         }
         else{
-            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata[0].email}'`);
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
 
             let id_game = req.body.id_game;            
             query = `insert into history values(null, '${token}', ${id_game}, null, 'Add Favourite Game')`
 
             //INSERT INTO `favorite` (`id_favorite`, `email`, `id_game`, `tgl_favorite`) VALUES (NULL, 'gg', '44', current_timestamp());
-            await executeQuery(conn,`insert into favorite values(NULL,'${userdata[0].api_key}','${parseInt(id_game)}', current_timestamp())`);
+            await executeQuery(conn,`insert into favorite values(NULL,'${userdata.email}','${parseInt(id_game)}', current_timestamp())`);
             conn.release()
-            msg = "berhasil menambahkan favorite, game id: "+id_game;
-            return res.status(201).send({"msg" : msg});
+            msg = "berhasil menambahkan favorite";
+            return res.status(400).send({"msg" : msg});
         }
     } 
     catch (error) {
@@ -420,10 +420,10 @@ router.get('/favorite',async(req,res)=>{
             return res.status(400).send({"msg" : msg});
         }
         else{
-            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata[0].email}'`);
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
 
             let list_fav=[];
-            query = `select * from favorite where api_key = '${userdata[0].api_key}'`;
+            query = `select * from favorite where email = '${userdata.email}'`;
             let fav = await executeQuery(conn,query);
             for (let i = 0; i < fav.length; i++) {
                 query = `https://api.rawg.io/api/games/${fav[0].id_game}?key=${apikey}`;
@@ -437,7 +437,7 @@ router.get('/favorite',async(req,res)=>{
             msg = "Favorite berhasil didapatkan";
             conn.release();
             return res.status(200).send({
-                "Nama_user" : userdata[0].nama,
+                "Nama_user" : userdata.nama,
                 "List Favorite" : list_fav 
             })
         }
@@ -488,20 +488,15 @@ router.post('/review',async(req,res)=>{
             return res.status(400).send({"msg" : msg});
         }
         else{
-            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata[0].email}'`);
+            await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
 
             let id_game = req.body.id_game;
             query = `insert into history values(null, '${token}', ${id_game}, null, 'Add Review/Rating Game')`
 
-            await executeQuery(conn,`insert into review values(NULL,'${userdata[0].api_key}','${parseInt(id_game)}', '${parseInt(rating)}', '${review}')`);
+            await executeQuery(conn,`insert into review values(NULL,'${userdata.email}','${parseInt(id_game)}', '${parseInt(rating)}', '${review}')`);
             conn.release()
             msg = "berhasil menambahkan review";
-            return res.status(201).send({
-                "id_game":id_game,
-                "nama user":userdata[0].nama_user,
-                "rating":rating,
-                "review":review,
-            });
+            return res.status(400).send({"msg" : msg});
         }
     } 
     catch (error) {
@@ -535,7 +530,7 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
         let pass = req.body.password;
         let nama = req.body.nama_user;
         let jenis = req.body.jenis_user;
-        let directory = "./uploads/" + req.file.filename;
+        let directory = "./uploads" + req.file.filename;
 
         if ( result.length < 1 ){
             msg = "Email tidak ditemukan";
@@ -557,12 +552,7 @@ router.put('/profile', uploads.single('gambar_profile'),async(req,res)=>{
         } catch (error) {
             
         }
-        return res.status(200).send({
-            "nama user": nama,
-            "jenis user": jenis,
-            "password user": pass,
-            "gambar user": directory,
-        });
+        return res.status(200).send("Berhasil mengubah user");
 
     } catch (error) {
         console.log(error);
@@ -590,12 +580,13 @@ router.put('/review',async(req,res)=>{
     }
     
     let user = userdata;
-    
-    let id_game = req.body.id_game;
-    let rating = req.body.rating;
-    let review = req.body.review;
         try {
             //console.log("masuk try");
+
+
+            let id_game = req.body.id_game;
+            let rating = req.body.rating;
+            let review = req.body.review;
 
             //cek rating
             if(10 >= parseInt(rating) || parseInt(rating) >= 100){
@@ -620,7 +611,8 @@ router.put('/review',async(req,res)=>{
 
                 //console.log("api cukup");
 
-                let query = `UPDATE review SET rating = ${rating}, review = '${review}' WHERE api_key = '${userdata[0].api_key}' AND id_game = '${id_game}';`;
+                let query = `UPDATE review SET rating = ${rating}, review = '${review}' WHERE email = '${userdata.email}' AND id_game = '${id_game}';`;
+
 
                 //console.log("update review");
 
@@ -649,7 +641,7 @@ router.put('/review',async(req,res)=>{
         }
 
 
-        let update_api_hit = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata[0].email}'`);
+        let update_api_hit = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
         try {
             conn.release();
         } catch (error) {
@@ -658,13 +650,8 @@ router.put('/review',async(req,res)=>{
         
 
         msg = "Berhasil mengubah review";
-        return res.status(200).send({
-            "id_game":id_game,
-            "nama user":userdata[0].nama_user,
-            "rating":rating,
-            "review":review,
-        });
-        // console.log("return");
+        return res.status(200).send({"msg" : msg});
+        console.log("return");
 
     
 });
@@ -677,7 +664,7 @@ router.delete('/favorite',async(req,res)=>{
         return res.status(401).send({"msg" : msg})
     }
     let token = req.headers["key"]
-    let query = `select * from user where api_key='${token}'`
+    query = `select * from user where api_key='${token}'`
     let userdata = await executeQuery(conn,query)
 
     if ( userdata.length==0 ){
@@ -704,7 +691,7 @@ router.delete('/favorite',async(req,res)=>{
     }
 
     let id_game = req.body.id_game;
-    query = `DELETE FROM favorite WHERE api_key = '${userdata[0].api_key}' AND id_game = '${id_game}';`;
+    let query = `DELETE FROM favorite WHERE email = '${userdata.email}' AND id_game = '${id_game}';`;
 
     let result = await executeQuery(conn, query);
     try {
@@ -719,7 +706,7 @@ router.delete('/favorite',async(req,res)=>{
     }
     else 
     {
-        await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata[0].email}'`);
+        await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
         try {
             conn.release();
         } catch (error) {
@@ -773,7 +760,7 @@ router.delete('/review',async(req,res)=>{
     let result = null;
     try {
         
-        result = await executeQuery(conn,`DELETE from review WHERE api_key = '${userdata[0].api_key}' AND id_game = '${id_game}';`);
+        result = await executeQuery(conn,`DELETE from review WHERE email = '${userdata.email}' AND id_game = '${id_game}';`);
         conn.release();
 
 
@@ -786,11 +773,11 @@ router.delete('/review',async(req,res)=>{
         return res.status(400).send("Gagal menghapus review");
     }
     else {
-        result = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata[0].email}'`);
+        result = await executeQuery(conn,`update user set api_hit = ${new_api_hit} where email = '${userdata.email}'`);
     }
     
 
-    msg = "Berhasil menghapus review game id "+id_game;
+    msg = "Berhasil menghapus review";
     return res.status(200).send({"msg" : msg});
 
 
