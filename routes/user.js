@@ -260,6 +260,8 @@ function inrange(inputtxt)
         return false; 
     }
 }
+
+//++apihit
 router.post('/topUpAPIhit',async(req,res)=>{
     try {
         const conn = await getconn()
@@ -311,6 +313,7 @@ router.post('/topUpAPIhit',async(req,res)=>{
     }
 })
 
+//++saldo
 router.post('/topUpSaldo',async(req,res)=>{
     try {
         const conn = await getconn()
@@ -349,6 +352,7 @@ router.post('/topUpSaldo',async(req,res)=>{
     }
 })
 
+//add favorite
 router.post('/favorite',async(req,res)=>{
     try {
         const conn = await getconn()
@@ -393,6 +397,7 @@ router.post('/favorite',async(req,res)=>{
     }
 })
 
+//menampilkan favourite
 router.get('/favorite',async(req,res)=>{
     try {
         const conn = await getconn()
@@ -426,11 +431,11 @@ router.get('/favorite',async(req,res)=>{
             query = `select * from favorite where api_key = '${userdata[0].api_key}'`;
             let fav = await executeQuery(conn,query);
             for (let i = 0; i < fav.length; i++) {
-                query = `https://api.rawg.io/api/games/${fav[0].id_game}?key=${apikey}`;
+                query = `https://api.rawg.io/api/games/${fav[i].id_game}?key=${apikey}`;
                 let game = await axios.get(query);
                 list_fav.push({
                     "Game" : game["data"]["name"],
-                    "Adding Date" : fav[0].tgl_favorite
+                    "Adding Date" : fav[i].tgl_favorite
                 });
             }
 
@@ -447,6 +452,7 @@ router.get('/favorite',async(req,res)=>{
     }
 })
 
+//add review rating
 router.post('/review',async(req,res)=>{
     try {
         const conn = await getconn()
