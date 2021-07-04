@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jun 09, 2021 at 02:38 PM
--- Server version: 10.4.13-MariaDB
--- PHP Version: 7.4.8
+-- Host: localhost
+-- Generation Time: Jul 04, 2021 at 05:40 PM
+-- Server version: 8.0.13-4
+-- PHP Version: 7.2.24-0ubuntu0.18.04.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -18,10 +19,10 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `proyek_soa`
+-- Database: `6ozd7j9z6w`
 --
-CREATE DATABASE IF NOT EXISTS `proyek_soa` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `proyek_soa`;
+CREATE DATABASE IF NOT EXISTS `6ozd7j9z6w` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `6ozd7j9z6w`;
 
 -- --------------------------------------------------------
 
@@ -34,25 +35,27 @@ CREATE TABLE `favorite` (
   `id_favorite` int(255) NOT NULL,
   `api_key` varchar(255) NOT NULL,
   `id_game` int(11) NOT NULL,
-  `tgl_favorite` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `tgl_favorite` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `favorite`
 --
 
-INSERT INTO `favorite` (`id_favorite`, `api_key`, `id_game`, `tgl_favorite`) VALUES
-(1, 'ss', 11, '2021-05-15 13:32:29'),
-(2, 'ss', 11, '2021-05-15 13:33:12'),
-(3, 'dwd', 33, '0000-00-00 00:00:00'),
-(4, 'gg', 44, '2021-05-15 13:42:18'),
-(8, 'dicky@gmail.com', 1, '2021-05-15 13:56:07'),
-(11, 'dicky@gmail.com', 0, '2021-05-16 12:49:57'),
-(12, 'dicky@gmail.com', 0, '2021-05-16 12:51:31'),
-(13, 'dicky@gmail.com', 0, '2021-05-16 12:54:40'),
-(14, 'dicky@gmail.com', 3498, '2021-05-27 06:58:30'),
-(15, 'dicky@gmail.com', 3498, '2021-05-27 07:14:40'),
-(16, 'dicky@gmail.com', 1, '2021-05-27 07:15:32');
+INSERT INTO `favorite` (`id_favorite`, `api_key`, `id_game`) VALUES
+(1, 'ss', 11),
+(2, 'ss', 11),
+(3, 'dwd', 33),
+(4, 'gg', 44),
+(8, 'dicky@gmail.com', 1),
+(11, 'dicky@gmail.com', 0),
+(12, 'dicky@gmail.com', 0),
+(13, 'dicky@gmail.com', 0),
+(14, 'dicky@gmail.com', 3498),
+(15, 'dicky@gmail.com', 3498),
+(16, 'dicky@gmail.com', 1),
+(17, '8o3heXWG5NN2ElI', 3498),
+(19, '8o3heXWG5NN2ElI', 2);
 
 -- --------------------------------------------------------
 
@@ -65,9 +68,19 @@ CREATE TABLE `history` (
   `id_history` int(11) NOT NULL,
   `api_key` varchar(255) NOT NULL,
   `id_game` int(11) NOT NULL,
-  `tgl_history` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `tgl_history` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `deskripsi_history` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `history`
+--
+
+INSERT INTO `history` (`id_history`, `api_key`, `id_game`, `deskripsi_history`) VALUES
+(4, '2LuQ5KUwYpiXhmo', 1, 'view detail game'),
+(8, 'chYWILZg17CtlrA', 1, 'view detail game'),
+(9, 'chYWILZg17CtlrA', 1, 'view detail game'),
+(17, '8o3heXWG5NN2ElI', 1, 'view detail game');
 
 -- --------------------------------------------------------
 
@@ -93,7 +106,12 @@ INSERT INTO `review` (`id_review`, `api_key`, `id_game`, `rating`, `review`) VAL
 (2, 'dicky@gmail.com', 1, 80, 'mantul'),
 (3, 'dicky@gmail.com', 1, 80, 'mantul'),
 (4, 'dicky@gmail.com', 1, 80, 'mantul'),
-(5, 'dicky@gmail.com', 1, 80, 'mantul2');
+(5, 'dicky@gmail.com', 1, 80, 'mantul2'),
+(6, '8o3heXWG5NN2ElI', 1, 80, 'mantul'),
+(7, '8o3heXWG5NN2ElI', 2, 82, 'mantul'),
+(8, '8o3heXWG5NN2ElI', 1, 80, 'mantul'),
+(9, '8o3heXWG5NN2ElI', 1, 80, 'mantul'),
+(10, '8o3heXWG5NN2ElI', 1, 80, 'mantul');
 
 -- --------------------------------------------------------
 
@@ -118,7 +136,13 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`api_key`, `email`, `password`, `nama_user`, `jenis_user`, `gambar_profile`, `saldo_user`, `api_hit`) VALUES
-('', 'dicky@gmail.com', 'ggwp', 'dicky', 'P', './uploadsdicky.jpg', 998499, 710);
+('', 'dicky@gmail.com', 'ggwp', 'dicky', 'P', './uploadsdicky.jpg', 998499, 710),
+('2LuQ5KUwYpiXhmo', 'testing@gmail.com', 'testing', 'testing', 'N', './uploads/testing.jpg', 0, 50),
+('8o3heXWG5NN2ElI', 'demo1@gmail.com', '12345', 'ducky2', 'P', './uploads/ducky2.jpg', 99450, 1785),
+('chYWILZg17CtlrA', 'demo2@gmail.com', 'demo2', 'demo2', 'P', './uploads/demo2.jpg', 0, 50),
+('Cp31PgH4CoH1nxQ', 'normal1@gmail.com', 'normal', 'user normal', 'N', './uploads/user normal.jpg', 0, 50),
+('gvrL0P7fTPvsRiA', 'david@gmail.com', 'david', 'david', 'P', './uploads/david.png', 0, 50),
+('tQUZu4ctHc2AR3K', 'test@gmail.com', 'test', 'test', 'P', './uploads/test.jpg', 0, 50);
 
 --
 -- Indexes for dumped tables
@@ -156,19 +180,19 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `favorite`
 --
 ALTER TABLE `favorite`
-  MODIFY `id_favorite` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_favorite` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `history`
 --
 ALTER TABLE `history`
-  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_history` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `review`
 --
 ALTER TABLE `review`
-  MODIFY `id_review` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_review` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

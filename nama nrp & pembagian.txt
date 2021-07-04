@@ -1,0 +1,30 @@
+nama/nrp
+David Brave - 218116715
+Jeffry Yohanes - 218116724
+Leonardo Djojo Agustinus - 218116728
+Dicky Asa Dewa Pitaloeka - 218116748
+
+pembagian:
+Get
+Detail/view game - jeffry
+Get favorite - dicky
+Search game - jeffry
+Get history - leo
+List game - jeffry
+Filter game - jeffry
+---------------------
+Post
+Register - leo
+Login - leo
+Add favorite - dicky
+Add personal rating/review - dicky
+top up - dicky
+---------------------
+Put
+Update rating/review - david
+Update profile - david
+---------------------
+Delete
+Delete favourite - david
+Delete rating/review - david
+Clear  history - leo

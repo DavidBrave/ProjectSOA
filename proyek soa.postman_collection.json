@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0b782ba9-7e2d-4f0b-adff-d0ece9e68192",
+		"_postman_id": "e66118eb-f2e1-4ba5-8e17-ef7971a69930",
 		"name": "proyek soa",
 		"description": "Project tentang api games\n\nWebservice ini menyediakan pelayanan api untuk games, dimana tidak hanya menampilkan games-games yang ada tapi juga dapat digunakan untuk melihat jumlah favorit games-games tersebut",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -124,7 +124,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "",
+											"value": "1",
 											"type": "text"
 										}
 									]
@@ -214,10 +214,10 @@
 											"    pm.response.to.have.status(200);\r",
 											"});\r",
 											"\r",
-											"const jsonData = pm.response.json();\r",
-											"pm.test(\"response berbentuk string(pesan)\", function(){\r",
-											"    pm.expect(jsonData).to.be.an(\"string\");\r",
-											"});\r",
+											"// const jsonData = pm.response.json();\r",
+											"// pm.test(\"response berbentuk string(pesan)\", function(){\r",
+											"//     pm.expect(jsonData).to.be.an(\"string\");\r",
+											"// });\r",
 											"\r",
 											"pm.test(\"apikey ada\", () => {\r",
 											"    pm.request.to.have.header(\"key\");\r",
@@ -241,7 +241,7 @@
 									"urlencoded": [
 										{
 											"key": "id_game",
-											"value": "11",
+											"value": "1",
 											"type": "text"
 										}
 									]
@@ -493,7 +493,7 @@
 								{
 									"key": "gambar_profile",
 									"type": "file",
-									"src": "/C:/Users/Dicky/OneDrive/Documents/Pictures/aqua.jpg"
+									"src": "/E:/jeffry's documents/materi stts/semester 6/soa/proyek/back.jpg"
 								}
 							]
 						},
@@ -612,7 +612,7 @@
 							"urlencoded": [
 								{
 									"key": "total_api_hit",
-									"value": "10",
+									"value": "500",
 									"type": "text"
 								}
 							]
@@ -705,10 +705,10 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"const jsonData = pm.response.json();\r",
-									"pm.test(\"response berbentuk string(pesan)\", function(){\r",
-									"    pm.expect(jsonData).to.be.an(\"string\");\r",
-									"});\r",
+									"// const jsonData = pm.response.json();\r",
+									"// pm.test(\"response berbentuk string(pesan)\", function(){\r",
+									"//     pm.expect(jsonData).to.be.an(\"string\");\r",
+									"// });\r",
 									"\r",
 									"pm.test(\"apikey ada\", () => {\r",
 									"    pm.request.to.have.header(\"key\");\r",
@@ -879,7 +879,7 @@
 							"variable": [
 								{
 									"key": "keyword",
-									"value": "porta"
+									"value": "portal"
 								}
 							]
 						},
@@ -920,7 +920,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://waiting-pretty-somersault.glitch.me/game/listall?page=1",
+							"raw": "https://waiting-pretty-somersault.glitch.me/game/listall?page=2",
 							"protocol": "https",
 							"host": [
 								"waiting-pretty-somersault",
@@ -934,7 +934,7 @@
 							"query": [
 								{
 									"key": "page",
-									"value": "1"
+									"value": "2"
 								}
 							]
 						},
@@ -966,7 +966,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://waiting-pretty-somersault.glitch.me/games/filter?genre=puzzle&page=2&start_year=2010&end_year=2014&rating_start=0&rating_end=4&metacritic_start=0&metacritic_end=70&playtime_start=0&playtime_end=3",
+							"raw": "https://waiting-pretty-somersault.glitch.me/game/filter?genre=puzzle&page=1&start_year=2010&end_year=2014&rating_start=3&rating_end=5&metacritic_start=0&metacritic_end=80&playtime_start=0&playtime_end=10",
 							"protocol": "https",
 							"host": [
 								"waiting-pretty-somersault",
@@ -974,7 +974,7 @@
 								"me"
 							],
 							"path": [
-								"games",
+								"game",
 								"filter"
 							],
 							"query": [
@@ -984,7 +984,7 @@
 								},
 								{
 									"key": "page",
-									"value": "2"
+									"value": "1"
 								},
 								{
 									"key": "start_year",
@@ -996,11 +996,11 @@
 								},
 								{
 									"key": "rating_start",
-									"value": "0"
+									"value": "3"
 								},
 								{
 									"key": "rating_end",
-									"value": "4"
+									"value": "5"
 								},
 								{
 									"key": "metacritic_start",
@@ -1008,7 +1008,7 @@
 								},
 								{
 									"key": "metacritic_end",
-									"value": "70"
+									"value": "80"
 								},
 								{
 									"key": "playtime_start",
@@ -1016,7 +1016,7 @@
 								},
 								{
 									"key": "playtime_end",
-									"value": "3"
+									"value": "10"
 								}
 							]
 						},
@@ -1025,6 +1025,26 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
