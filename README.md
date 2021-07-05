@@ -8,7 +8,7 @@ Memberi API untuk daftar game yang ingin disimpan, entah sebagai favorite, maupu
 2. [Github Link](https://github.com/DavidBrave/ProjectSOA)
 3. [Hosting Link](https://waiting-pretty-somersault.glitch.me/)
 4. [Postman Link](https://documenter.getpostman.com/view/14457522/Tzm2JHeU)
-5. [Video Link](https://drive.google.com/drive/folders/1ogXrcOIVNl2FrW9yZMT9pTQC2hRu0Idu?usp=sharing)
+5. [Video Link](https://drive.google.com/file/d/1tUS--5_ahKz4UMjNnOgOcxy8zpM7G5FT/view?usp=sharing)
 6. [Database Export Link](https://drive.google.com/drive/folders/1tCMrRO3NwxVGsPld-IAQC6mnB8wQYKjJ?usp=sharing)
 
 
