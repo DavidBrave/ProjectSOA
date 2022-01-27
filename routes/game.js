@@ -111,6 +111,7 @@ app.get('/id/:id', async function (req, res) {
             if(hasilSelect.length>0){
                 let query = `insert into history values('', '${token}', ${idGame}, null, 'view detail game')`
                 let hasilInsert = await executeQuery(conn,query);
+                console.log("insert history")
             }
         }
         if(result.length>0){
@@ -161,8 +162,6 @@ app.get('/search/:keyword', async function (req, res) {
         msg="error";
         return res.status(404).send(error);
     }
-    
-
 })
 
 app.get('/listall', async function (req, res) {
